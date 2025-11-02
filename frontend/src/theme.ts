@@ -13,8 +13,21 @@ const theme = createTheme({
     fontFamily: roboto.style.fontFamily,
     h1: {
       fontSize: '2rem',
-    }
+    },
+  },
+
+  colorSchemes: {
+    dark: {
+      palette: {
+        background: {
+          default: '#0F172A',
+          paper: '#1E293B',
+        }
+      }
+    },
+
   },
 });
+
 
 export default theme;
