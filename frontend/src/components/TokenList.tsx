@@ -1,6 +1,6 @@
 import { TokenBalanceWithInfo } from "@/hooks/useQueryTokenBalances";
 import { Button, Stack, } from "@mui/material";
-import { TokenRow } from "./TokenRow";
+import { TokenRow, TokenRowMode } from "./TokenRow";
 import React, { useMemo, useState } from "react";
 
 export function TokenList({
@@ -54,7 +54,7 @@ export function TokenList({
 
         {showSpam && <Stack spacing={2}>
             {potentialSpamTokens.map((token, index) => (
-                <TokenRow key={index} token={token} />
+                <TokenRow key={index} token={token} mode={TokenRowMode.SPAM} />
             ))}
         </Stack>}
     </>

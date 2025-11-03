@@ -5,10 +5,17 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { TokenBalanceWithInfo } from "@/hooks/useQueryTokenBalances";
 import { useState } from "react";
 
+export enum TokenRowMode {
+    DEFAULT,
+    SPAM,
+}
+
 export function TokenRow({
     token,
+    mode = TokenRowMode.DEFAULT,
 }: {
     token: TokenBalanceWithInfo,
+    mode?: TokenRowMode
 }) {
     const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
 
@@ -37,6 +44,26 @@ export function TokenRow({
             return n.toFixed(Math.min(maxFraction, 6)).replace(/\.?0+$/, "");
         }
     };
+
+    const tokenNameDeservesSlicing = (tokenName: string) => {
+        return mode == TokenRowMode.SPAM && tokenName.length > 25;
+    }
+    const formatTokenName = (tokenName: string) => {
+        if (tokenNameDeservesSlicing(tokenName)) {
+            return tokenName.slice(0, 22) + '...';
+        }
+        return tokenName
+    }
+
+    const tokenSymbolDeservesSlicing = (tokenSymbol: string) => {
+        return mode == TokenRowMode.SPAM && tokenSymbol.length > 10;
+    }
+    const formatTokenSymbol = (tokenSymbol: string) => {
+        if (tokenSymbolDeservesSlicing(tokenSymbol)) {
+            return tokenSymbol.slice(0, 7) + '...';
+        }
+        return tokenSymbol
+    }
 
     return (<Card
         sx={{
@@ -74,19 +101,23 @@ export function TokenRow({
                 {/* Token Info */}
                 <Box sx={{ flex: 1, minWidth: 0 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                        <Typography variant="h6" sx={{ fontWeight: 600, color: 'white' }}>
-                            {token.name}
-                        </Typography>
-                        <Chip
-                            label={token.symbol}
-                            size="small"
-                            sx={{
-                                bgcolor: 'rgba(168, 85, 247, 0.2)',
-                                color: '#d8b4fe',
-                                fontSize: '0.75rem',
-                                fontWeight: 500,
-                            }}
-                        />
+                        <Tooltip title={token.name} disableHoverListener={!tokenNameDeservesSlicing(token.name)}>
+                            <Typography variant="h6" sx={{ fontWeight: 600, color: 'white' }}>
+                                {formatTokenName(token.name)}
+                            </Typography>
+                        </Tooltip>
+                        <Tooltip title={token.symbol} disableHoverListener={!tokenSymbolDeservesSlicing(token.symbol)}>
+                            <Chip
+                                label={formatTokenSymbol(token.symbol)}
+                                size="small"
+                                sx={{
+                                    bgcolor: 'rgba(168, 85, 247, 0.2)',
+                                    color: '#d8b4fe',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 500,
+                                }}
+                            />
+                        </Tooltip>
                     </Box>
                     <Typography
                         variant="body2"
@@ -103,9 +134,12 @@ export function TokenRow({
 
                 {/* Balance Info and action buttons */}
                 <Box sx={{ textAlign: 'right', mr: 2 }}>
-                    <Typography variant="h6" sx={{ fontWeight: 600, color: 'white', mb: 0.5 }}>
-                        {formatTokenBalance(token.tokenBalance, token.decimals)} {token.symbol}
-                    </Typography>
+                    <Tooltip title={token.symbol} disableHoverListener={!tokenSymbolDeservesSlicing(token.symbol)}>
+                        <Typography variant="h6" sx={{ fontWeight: 600, color: 'white', mb: 0.5 }}>
+                            {formatTokenBalance(token.tokenBalance, token.decimals)} {formatTokenSymbol(token.symbol)}
+                        </Typography>
+                    </Tooltip>
+
                     {/* <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)' }}>
                                             ${token.usdValue}
                                         </Typography> */}
