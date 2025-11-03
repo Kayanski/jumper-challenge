@@ -1,12 +1,10 @@
 import { Box, keyframes, useTheme } from "@mui/material";
 
 export default function Loader() {
-  const theme = useTheme();
 
   const spin = keyframes`
     to { transform: rotate(360deg); }
   `;
-
   return (
     <Box
       aria-hidden="true"
