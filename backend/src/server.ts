@@ -3,6 +3,7 @@ import express, { Express } from 'express';
 import helmet from 'helmet';
 import { pino } from 'pino';
 
+
 import { healthCheckRouter } from '@/api/healthCheck/healthCheckRouter';
 import { openAPIRouter } from '@/api-docs/openAPIRouter';
 import errorHandler from '@/common/middleware/errorHandler';
@@ -10,31 +11,55 @@ import rateLimiter from '@/common/middleware/rateLimiter';
 import requestLogger from '@/common/middleware/requestLogger';
 import { env } from '@/common/utils/envConfig';
 import { balanceQueryRouter } from './api/balanceQuery/balanceQueryRouter';
+import { accountCreationRouter } from './api/accountCreation/accountCreationRouter';
+import { DataSource } from 'typeorm';
+import { Account } from './models/account';
+
 
 const logger = pino({ name: 'server start' });
 const app: Express = express();
 
-// Set the application to trust the reverse proxy
-app.set('trust proxy', true);
+// TypeORM
+const AppDataSource = new DataSource({
+    type: "postgres",
+    host: env.POSTGRES_HOST,
+    port: env.POSTGRES_PORT,
+    username: env.POSTGRES_USERNAME,
+    password: env.POSTGRES_PASSWORD,
+    database: env.POSTGRES_DB,
+    entities: [Account],
+    synchronize: true,
+    logging: false,
+})
+AppDataSource.initialize().then(() => {
 
-// Middlewares
-app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
-app.use(helmet());
-app.use(rateLimiter);
-app.use(express.json());
+
+    // Set the application to trust the reverse proxy
+    app.set('trust proxy', true);
+
+    // Middlewares
+    app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
+    app.use(helmet());
+    app.use(rateLimiter);
+    app.use(express.json());
 
 
-// Request logging
-app.use(requestLogger);
+    // Request logging
+    app.use(requestLogger);
 
-// Routes
-app.use('/health-check', healthCheckRouter);
-app.use('/balance-query', balanceQueryRouter);
+    // Routes
+    app.use('/health-check', healthCheckRouter);
+    app.use('/account-creation', accountCreationRouter);
+    app.use('/balance-query', balanceQueryRouter);
 
-// Swagger UI
-app.use(openAPIRouter);
+    // Swagger UI
+    app.use(openAPIRouter);
 
-// Error handlers
-app.use(errorHandler());
+    // Error handlers
+    app.use(errorHandler());
 
-export { app, logger };
+
+})
+
+
+export { app, logger, AppDataSource };

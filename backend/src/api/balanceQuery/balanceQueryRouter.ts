@@ -5,11 +5,11 @@ import { z } from 'zod';
 import { createApiResponse } from '@/api-docs/openAPIResponseBuilders';
 import { ResponseStatus, ServiceResponse } from '@/common/models/serviceResponse';
 import { handleServiceResponse } from '@/common/utils/httpHandlers';
-import { BalanceQuerySchema, BalanceQuerySchemaMessage, BalanceQuerySchemaVersion } from './balanceQuerySchema';
+import { BalanceQuerySchema } from './balanceQuerySchema';
 import { publicClient } from '@/common/evm/viemClient';
 import { alchemyTokenBalances, alchemyTokenInfo } from '@/common/evm/alchemyTokenQueries';
-import { balanceQueryV1 } from './query/v1';
 import { StatusCodes } from 'http-status-codes';
+import { balanceQuery } from './query';
 
 export const balanceQueryRegistry = new OpenAPIRegistry();
 
@@ -36,19 +36,11 @@ export const balanceQueryRouter: Router = (() => {
     router.post('/', async (req: Request, res: Response) => {
 
         // Here we handle the balance query logic
-        const { version, address, signature } = BalanceQuerySchema.parse(req.body);
+        const { address } = BalanceQuerySchema.parse(req.body);
 
-        switch (version) {
-            case BalanceQuerySchemaVersion.V1:
-                // Handle version 1.0 logic
-                const balanceResponse = await balanceQueryV1({ address, signature });
-                const serviceResponse = new ServiceResponse(ResponseStatus.Success, 'Service is healthy', balanceResponse, StatusCodes.OK);
-                handleServiceResponse(serviceResponse, res);
-                break;
-            default:
-                throw new Error('Unsupported schema version');
-                break;
-        }
+        const balanceResponse = await balanceQuery({ address });
+        const serviceResponse = new ServiceResponse(ResponseStatus.Success, 'Service is healthy', balanceResponse, StatusCodes.OK);
+        handleServiceResponse(serviceResponse, res);
 
     });
 
