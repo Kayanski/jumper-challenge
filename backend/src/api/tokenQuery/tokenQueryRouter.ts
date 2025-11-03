@@ -11,24 +11,23 @@ import { Token } from '@/models/Token';
 export const tokenQueryRegistry = new OpenAPIRegistry();
 
 export const tokenQueryRouter: Router = (() => {
-    const router = express.Router();
+  const router = express.Router();
 
-    tokenQueryRegistry.registerPath({
-        method: 'get',
-        path: '/token',
-        tags: ['Token Query'],
-        responses: createApiResponse(z.null(), 'Success'), // TODO
-    });
+  tokenQueryRegistry.registerPath({
+    method: 'get',
+    path: '/token',
+    tags: ['Token Query'],
+    responses: createApiResponse(z.null(), 'Success'), // TODO
+  });
 
+  router.get('/', async (req: Request, res: Response) => {
+    // Here we handle the balance query logic
+    const tokenRegistry = AppDataSource.getRepository(Token);
 
-    router.get('/', async (req: Request, res: Response) => {
-        // Here we handle the balance query logic
-        const tokenRegistry = AppDataSource.getRepository(Token);
+    const tokens = await tokenRegistry.find();
+    const serviceResponse = new ServiceResponse(ResponseStatus.Success, 'Service is healthy', tokens, StatusCodes.OK);
+    handleServiceResponse(serviceResponse, res);
+  });
 
-        const tokens = await tokenRegistry.find()
-        const serviceResponse = new ServiceResponse(ResponseStatus.Success, 'Service is healthy', tokens, StatusCodes.OK);
-        handleServiceResponse(serviceResponse, res);
-    });
-
-    return router;
+  return router;
 })();

@@ -6,7 +6,12 @@ import { accountCreationRegistry } from '@/api/accountCreation/accountCreationRo
 import { tokenQueryRegistry } from '@/api/tokenQuery/tokenQueryRouter';
 
 export function generateOpenAPIDocument() {
-  const registry = new OpenAPIRegistry([accountCreationRegistry, tokenQueryRegistry, balanceQueryRegistry, healthCheckRegistry]);
+  const registry = new OpenAPIRegistry([
+    accountCreationRegistry,
+    tokenQueryRegistry,
+    balanceQueryRegistry,
+    healthCheckRegistry,
+  ]);
   const generator = new OpenApiGeneratorV3(registry.definitions);
 
   return generator.generateDocument({

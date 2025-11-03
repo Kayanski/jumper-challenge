@@ -1,7 +1,6 @@
 import { Box, keyframes, useTheme } from "@mui/material";
 
 export default function Loader() {
-
   const spin = keyframes`
     to { transform: rotate(360deg); }
   `;

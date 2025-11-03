@@ -16,43 +16,47 @@ import { TokenBalance } from '@/models/TokenBalance';
 export const balanceQueryRegistry = new OpenAPIRegistry();
 
 export const balanceQueryRouter: Router = (() => {
-    const router = express.Router();
+  const router = express.Router();
 
-    balanceQueryRegistry.registerPath({
-        method: 'get',
-        path: '/balance-query',
-        request: {
-            params: BalanceQuerySchema,
-        },
-        tags: ['Balance Query'],
-        responses: createApiResponse(z.null(), 'Success'), // TODO
-    });
+  balanceQueryRegistry.registerPath({
+    method: 'get',
+    path: '/balance-query',
+    request: {
+      params: BalanceQuerySchema,
+    },
+    tags: ['Balance Query'],
+    responses: createApiResponse(z.null(), 'Success'), // TODO
+  });
 
+  router.get('/', async (req: Request, res: Response) => {
+    // Here we handle the balance query logic
+    const { address } = BalanceQuerySchema.parse(req.query);
 
-    router.get('/', async (req: Request, res: Response) => {
-        // Here we handle the balance query logic
-        const { address } = BalanceQuerySchema.parse(req.query);
+    const balanceResponse = await balanceQuery({ address });
+    const serviceResponse = new ServiceResponse(
+      ResponseStatus.Success,
+      'Service is healthy',
+      balanceResponse,
+      StatusCodes.OK
+    );
+    handleServiceResponse(serviceResponse, res);
+  });
 
-        const balanceResponse = await balanceQuery({ address });
-        const serviceResponse = new ServiceResponse(ResponseStatus.Success, 'Service is healthy', balanceResponse, StatusCodes.OK);
-        handleServiceResponse(serviceResponse, res);
-    });
+  balanceQueryRegistry.registerPath({
+    method: 'get',
+    path: '/balance-query/all',
+    tags: ['Balance Query'],
+    responses: createApiResponse(z.null(), 'Success'), // TODO
+  });
 
-    balanceQueryRegistry.registerPath({
-        method: 'get',
-        path: '/balance-query/all',
-        tags: ['Balance Query'],
-        responses: createApiResponse(z.null(), 'Success'), // TODO
-    });
+  router.get('/all', async (req: Request, res: Response) => {
+    const tokenBalancesRepository = AppDataSource.getRepository(TokenBalance);
 
-    router.get('/all', async (req: Request, res: Response) => {
-        const tokenBalancesRepository = AppDataSource.getRepository(TokenBalance);
+    const balances = tokenBalancesRepository.find();
 
-        const balances = tokenBalancesRepository.find()
+    const serviceResponse = new ServiceResponse(ResponseStatus.Success, 'Service is healthy', balances, StatusCodes.OK);
+    handleServiceResponse(serviceResponse, res);
+  });
 
-        const serviceResponse = new ServiceResponse(ResponseStatus.Success, 'Service is healthy', balances, StatusCodes.OK);
-        handleServiceResponse(serviceResponse, res);
-    });
-
-    return router;
+  return router;
 })();
