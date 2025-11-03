@@ -21,9 +21,6 @@ export async function balanceQuery({ address, chainId }: BalanceQueryParams) {
   // Associating the Token Info
   const tokenInfo = await getOrFetchTokenInfo(chainId, tokenBalances.map((tb) => tb.contractAddress));
 
-  //const tokenInfo = await alchemyTokenInfo(chainId, tokenBalances.map((tb) => tb.contractAddress));
-
-
   // We update token info in database
   const tokenBalanceRepository = AppDataSource.getRepository(TokenBalance);
   const accountRepository = AppDataSource.getRepository(Account);

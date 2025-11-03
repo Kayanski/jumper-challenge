@@ -122,6 +122,13 @@ export default function Home() {
                       </StyledButton>
                     )}
                   </Box>
+                  <Typography
+                    variant="h5"
+                    component="h1"
+                    sx={{ fontWeight: 700, mb: 1, mt: 5, textAlign: "left" }}
+                  >
+                    All ERC-20 tokens held by your account:
+                  </Typography>
                   <TokenList tokens={balances} />
                 </>
               )}
