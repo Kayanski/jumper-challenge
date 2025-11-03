@@ -4,16 +4,16 @@ import { useAccount } from 'wagmi';
 
 
 export function useIsConnected() {
-    const { address } = useAccount();
+    const { address, chainId } = useAccount();
 
     return useQuery<boolean>({
-        enabled: !!address,
-        queryKey: ['isConnected', address],
+        enabled: !!address && !!chainId,
+        queryKey: ['isConnected', address, chainId],
         queryFn: async () => {
-            if (!address) {
+            if (!address || !chainId) {
                 throw new Error("Unreachable, no account connected");
             }
-            const connection = await backendIsConnected(address);
+            const connection = await backendIsConnected({ address, chainId });
             return connection.responseObject
         },
     });

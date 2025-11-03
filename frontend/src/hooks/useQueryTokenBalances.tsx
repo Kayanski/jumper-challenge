@@ -15,19 +15,19 @@ export interface TokenBalanceWithInfo {
 
 export function useQueryTokenBalances() {
     const { data: isConnected } = useIsConnected();
-    const { address } = useAccount();
+    const { address, chainId } = useAccount();
 
     return useQuery<TokenBalanceWithInfo[]>({
-        enabled: !!address && !!isConnected,
+        enabled: !!address && !!isConnected && !!chainId,
         queryKey: ['tokenBalances', address],
         queryFn: async () => {
-            if (!address) {
+            if (!address || !chainId) {
                 throw new Error("Unreachable, no account connected");
             }
             if (!isConnected) {
                 throw new Error("Unreachable, Account is not connected to the backend");
             }
-            const backendTokens = await backendTokenBalances(address);
+            const backendTokens = await backendTokenBalances({ address, chainId });
             return backendTokens.responseObject;
         },
     });

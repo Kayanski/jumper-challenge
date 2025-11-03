@@ -1,9 +1,15 @@
 import { TokenBalanceWithInfo } from "@/hooks/useQueryTokenBalances";
-import { BackendResponse } from "./backendResponse";
+import { BackendResponse } from "../queries/backendResponse";
 
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND_ADDRESS!;
 
-export async function backendAccountDelete(address: `0x${string}`, signature: `0x${string}`): Promise<BackendResponse<TokenBalanceWithInfo[]>> {
+export interface BackendAccountDeleteParams {
+    address: `0x${string}`;
+    signature: `0x${string}`;
+    chainId: number;
+}
+
+export async function backendAccountDelete({ address, signature, chainId }: BackendAccountDeleteParams): Promise<BackendResponse<TokenBalanceWithInfo[]>> {
 
     const tokenBalanceUrl = new URL("account-creation", baseUrl,);
     // Get token balances
@@ -14,8 +20,9 @@ export async function backendAccountDelete(address: `0x${string}`, signature: `0
         },
         body: JSON.stringify({
             version: "v1",
-            address: address,
-            signature: signature,
+            address,
+            signature,
+            chainId,
         })
     });
     const jsonResponse = await response.json();

@@ -1,7 +1,7 @@
 
 import { queryClient } from '@/app/providers';
-import { backendAccountCreation } from '@/queries/backendAccountCreation';
-import { backendAccountDelete } from '@/queries/backendAccountDelete';
+import { backendAccountCreation } from '@/mutations/backendAccountCreation';
+import { backendAccountDelete } from '@/mutations/backendAccountDelete';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useAccount } from 'wagmi';
 
@@ -11,14 +11,14 @@ export interface AccountCreationArguments {
 }
 
 export function useAccountCreation() {
-    const { address } = useAccount();
+    const { address, chainId } = useAccount();
 
     return useMutation<boolean, Error, AccountCreationArguments>({
         mutationFn: async ({ signature }: AccountCreationArguments) => {
-            if (!address) {
+            if (!address || !chainId) {
                 throw new Error("Unreachable, no account connected");
             }
-            return await backendAccountCreation(address, signature);
+            return await backendAccountCreation({ address, signature, chainId });
             return true
         },
 
@@ -35,15 +35,15 @@ export interface AccountDeletionArguments {
 }
 
 export function useAccountDelete() {
-    const { address } = useAccount();
+    const { address, chainId } = useAccount();
 
     return useMutation<boolean, Error, AccountCreationArguments>({
         mutationFn: async ({ signature }: AccountCreationArguments) => {
 
-            if (!address) {
+            if (!address || !chainId) {
                 throw new Error("Unreachable, no account connected");
             }
-            await backendAccountDelete(address, signature);
+            await backendAccountDelete({ address, signature, chainId });
             return true
         },
         onSuccess: () => {
