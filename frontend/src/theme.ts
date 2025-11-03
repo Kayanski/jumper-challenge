@@ -27,6 +27,14 @@ const theme = createTheme({
         },
       },
     },
+    light: {
+      palette: {
+        background: {
+          default: "#e3e3e3ff",
+          paper: "white",
+        },
+      },
+    }
   },
 });
 

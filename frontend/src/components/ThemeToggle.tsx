@@ -37,6 +37,7 @@ export function ThemeToggle() {
           padding: 4,
           borderRadius: 999,
           background: isDark ? "#374151" : "#e6e6e6",
+          border: isDark ? "1px solid #4b5563" : "1px solid #d4d4d4",
           position: "relative",
           transition: "background 200ms ease",
           boxSizing: "border-box",
@@ -46,8 +47,8 @@ export function ThemeToggle() {
         <span
           style={{
             position: "absolute",
-            top: 4,
-            left: isDark ? 34 : 4,
+            top: 3,
+            left: isDark ? 30 : 4,
             width: 26,
             height: 26,
             borderRadius: "50%",

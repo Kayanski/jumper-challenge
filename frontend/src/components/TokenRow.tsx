@@ -86,12 +86,12 @@ export function TokenRow({
   return (
     <Card
       sx={{
-        bgcolor: "rgba(30, 41, 59, 0.5)",
+        bgcolor: "background.paper",
         backdropFilter: "blur(10px)",
         border: "1px solid rgba(100, 116, 139, 0.3)",
         transition: "all 0.3s ease",
         "&:hover": {
-          bgcolor: "rgba(30, 41, 59, 0.7)",
+          bgcolor: "background.default",
           borderColor: "rgba(168, 85, 247, 0.5)",
           transform: "translateY(-2px)",
         },
@@ -136,7 +136,7 @@ export function TokenRow({
               >
                 <Typography
                   variant="h6"
-                  sx={{ fontWeight: 600, color: "white" }}
+                  sx={{ fontWeight: 600 }}
                 >
                   {formatTokenName(token.name)}
                 </Typography>
@@ -148,19 +148,24 @@ export function TokenRow({
                 <Chip
                   label={formatTokenSymbol(token.symbol)}
                   size="small"
-                  sx={{
-                    bgcolor: "rgba(168, 85, 247, 0.2)",
-                    color: "#d8b4fe",
+                  sx={[{
                     fontSize: "0.75rem",
                     fontWeight: 500,
-                  }}
+                  }, (theme) => theme.applyStyles("dark", {
+                    color: "#d8b4fe",
+                    bgcolor: "rgba(168, 85, 247, 0.2)",
+                  }), (theme) => theme.applyStyles("light", {
+                    bgcolor: "rgba(168, 85, 247, 0.8)",
+                    color: "white"
+                  })]
+                  }
                 />
               </Tooltip>
             </Box>
             <Typography
               variant="body2"
               sx={{
-                color: "rgba(255, 255, 255, 0.6)",
+                color: "text.secondary",
                 fontFamily: "monospace",
                 fontSize: "0.875rem",
                 textAlign: "left",
@@ -178,24 +183,20 @@ export function TokenRow({
             >
               <Typography
                 variant="h6"
-                sx={{ fontWeight: 600, color: "white", mb: 0.5 }}
+                sx={{ fontWeight: 600, mb: 0.5 }}
               >
                 {formatTokenBalance(token.tokenBalance, token.decimals)}{" "}
                 {formatTokenSymbol(token.symbol)}
               </Typography>
             </Tooltip>
-
-            {/* <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)' }}>
-                                            ${token.usdValue}
-                                        </Typography> */}
           </Box>
           <Box sx={{ display: "flex", gap: 1 }}>
             <Tooltip title="Copy address">
               <IconButton
                 onClick={() => copyToClipboard(token.contractAddress)}
                 sx={{
-                  bgcolor: "rgba(51, 65, 85, 0.5)",
-                  color: "rgba(255, 255, 255, 0.7)",
+                  bgcolor: "background.paper",
+                  color: "text.secondary",
                   "&:hover": {
                     bgcolor: "rgba(51, 65, 85, 1)",
                     color: "white",
@@ -216,8 +217,8 @@ export function TokenRow({
                 target="_blank"
                 rel="noopener noreferrer"
                 sx={{
-                  bgcolor: "rgba(51, 65, 85, 0.5)",
-                  color: "rgba(255, 255, 255, 0.7)",
+                  bgcolor: "background.paper",
+                  color: "text.secondary",
                   "&:hover": {
                     bgcolor: "rgba(51, 65, 85, 1)",
                     color: "white",

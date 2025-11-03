@@ -13,6 +13,8 @@ import { StyledButton } from "@/components/StyledButton";
 import { SecondaryText } from "@/components/Text";
 import { useVerifyOwnership } from "@/hooks/useVerifyOwnershipSignature";
 import { useMemo } from "react";
+import { WelcomeParagraph } from "@/components/flow/WelcomeParagraph";
+import { LoadingTokenList } from "@/components/flow/LoadingTokenList";
 
 export default function Home() {
   const { address, chainId } = useAccount();
@@ -66,24 +68,7 @@ export default function Home() {
           }}
           boxShadow={3}
         >
-          {!address && (
-            <>
-              <Typography
-                variant="h4"
-                component="h1"
-                sx={{ fontWeight: 700, mb: 1 }}
-              >
-                Welcome to the Token Explorer
-              </Typography>
-              <SecondaryText sx={{ mb: 3 }}>
-                Connect your wallet to get started — we only need your address.
-              </SecondaryText>
-
-              <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
-                <ConnectButton />
-              </Box>
-            </>
-          )}
+          {!address && <WelcomeParagraph />}
           {address && !isConnected && (
             <>
               <Box
@@ -116,6 +101,7 @@ export default function Home() {
 
           {address && isConnected && (
             <>
+              {!balances && <LoadingTokenList />}
               {balances && (
                 <>
                   <Box
@@ -139,29 +125,7 @@ export default function Home() {
                   <TokenList tokens={balances} />
                 </>
               )}
-              {!balances && (
-                <>
-                  <Box sx={{ marginBottom: "2em" }}>
-                    <Loader />
-                    <Typography variant="h6" sx={{ mt: 2, fontWeight: 600 }}>
-                      Loading Token List…
-                    </Typography>
-                    <SecondaryText sx={{ mt: 1 }}>
-                      Preparing your session — this may take a moment.
-                    </SecondaryText>
-                  </Box>
-                  <Box
-                    sx={{ display: "flex", justifyContent: "center", mb: 2 }}
-                  >
-                    <ConnectButton />
-                  </Box>
-                  <Box>
-                    <SecondaryText sx={{ mb: 3 }}>
-                      Your Wallet was successfully connected.
-                    </SecondaryText>
-                  </Box>
-                </>
-              )}
+
             </>
           )}
         </Box>

@@ -40,14 +40,13 @@ export function TokenList({ tokens }: { tokens: TokenBalanceWithInfo[] }) {
           sx={{
             py: 1.5,
             my: 5,
-            bgcolor: "rgba(30, 41, 59, 0.5)",
+            bgcolor: "background.default",
             backdropFilter: "blur(10px)",
-            border: "1px solid rgba(100, 116, 139, 0.5)",
-            color: "rgba(255, 255, 255, 0.7)",
+            border: "1px solid background.paper",
+            color: "text.primary",
             fontWeight: 500,
             "&:hover": {
-              bgcolor: "rgba(30, 41, 59, 0.7)",
-              borderColor: "rgba(239, 68, 68, 0.5)",
+              borderColor: "error.main",
             },
           }}
         >
