@@ -17,6 +17,8 @@ import {
 } from "@tanstack/react-query";
 import { ReactNode } from 'react';
 import { InitColorSchemeScript } from '@mui/material';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+
 
 export const config = getDefaultConfig({
     appName: 'Token Explorer App',
@@ -24,7 +26,7 @@ export const config = getDefaultConfig({
     chains: [mainnet, polygon, optimism, arbitrum, base],
     ssr: true, // If your dApp uses server side rendering (SSR)
 });
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 export function ContextProvider({
     children
@@ -38,6 +40,7 @@ export function ContextProvider({
                     <InitColorSchemeScript attribute="class" />
                     {children}
                 </RainbowKitProvider>
+                <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
         </WagmiProvider>
     )

@@ -1,14 +1,15 @@
 "use client"
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Button, Typography, useTheme } from "@mui/material";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import Image from "next/image";
 import { useAccount, useSignMessage } from "wagmi";
 import Loader from "../components/Loader";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { useQueryTokenBalances } from "@/hooks/useQueryTokenBalances";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useOwnershipSignature } from "@/storage/signature";
 import { TokenList } from "@/components/TokenList";
+import { useIsConnected } from "@/hooks/useIsConnected";
+import { useAccountCreation, useAccountDelete } from "@/hooks/useAccountCreation";
 
 export default function Home() {
   const { address } = useAccount();
@@ -16,23 +17,37 @@ export default function Home() {
   const { signMessage } = useSignMessage({})
 
   const { data: balances } = useQueryTokenBalances();
+  const { data: isConnected } = useIsConnected();
 
-  useEffect(() => {
-    const verifyFunc = async () => {
-      if (address) {
-        if (!getSignature(address)) {
-          // We use this sign function for simplicity here, you might want to use other typed solutions in actual apps
-          signMessage({ message: `I am signing into Jumper Exchange` }, {
-            onSuccess(data, variables, onMutateResult, context) {
-              setSignature(data, address)
-            },
-          });
-        }
+  const [isCreatingAccount, setIsCreatingAccount] = useState(false)
+
+  const { mutateAsync: createAccount } = useAccountCreation();
+  const { mutateAsync: deleteAccount } = useAccountDelete();
+
+  const signAndCreateAccount = useCallback(async () => {
+    setIsCreatingAccount(true)
+    if (address) {
+      const signature = getSignature(address)
+      if (!signature) {
+        signMessage({ message: `I am signing into Jumper Exchange` }, {
+          onSuccess(data) {
+            setSignature(data, address);
+            createAccount({ signature: data }).finally(() => {
+              setIsCreatingAccount(false)
+            });
+          },
+          onError() {
+            setIsCreatingAccount(false)
+          }
+        });
+      } else {
+        createAccount({ signature }).finally(() => {
+          setIsCreatingAccount(false)
+        });
       }
-      // Action to execute right when the user is logged in
-      verifyFunc()
     }
-  }, [address, setSignature, getSignature]);
+
+  }, [address, signature, createAccount, setIsCreatingAccount]);
 
   return (
     <Box
@@ -54,7 +69,9 @@ export default function Home() {
         alignItems: "flex-end",
         gap: 2
       }}>
-        <ThemeToggle />
+        <Box sx={{ display: "flex", gap: 2 }}>
+          {signature && <Button onClick={() => deleteAccount({ signature })}>Delete Account</Button>}<ThemeToggle />
+        </Box>
         <Box
           sx={{
             p: 4,
@@ -80,8 +97,32 @@ export default function Home() {
               <ConnectButton />
             </Box></>
           }
+          {address && !isConnected && <>
+            <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+              {!isCreatingAccount && <Button
+                variant="contained"
+                color="primary"
+                onClick={() => signAndCreateAccount()}
+                sx={{
+                  textTransform: "none",
+                  borderRadius: 3,
+                  px: 4,
+                  py: 1.2,
+                  fontWeight: 700,
+                  boxShadow: 3,
+                }}
+              >
+                Verify Account
+              </Button>
+              }
+              {isCreatingAccount && <Loader />}
+            </Box>
+            <Typography variant="body1" sx={{ color: "text.secondary" }}>
+              This is needed in order to fetch your account balance
+            </Typography>
+          </>}
 
-          {address &&
+          {address && isConnected &&
             <>{
               balances && <>
                 <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
