@@ -19,19 +19,18 @@ export default function Home() {
 
   useEffect(() => {
     const verifyFunc = async () => {
-      // We use this sign function for simplicity here, you might want to use other typed solutions in actual apps
-      signMessage({ message: `I am signing into Jumper Exchange` }, {
-        onSuccess(data, variables, onMutateResult, context) {
-          setSignature(data)
-        },
-      });
-    };
-    if (address) {
-      // Action to execute right when the user is logged in
-      if (!getSignature()) {
-        verifyFunc()
+      if (address) {
+        if (!getSignature(address)) {
+          // We use this sign function for simplicity here, you might want to use other typed solutions in actual apps
+          signMessage({ message: `I am signing into Jumper Exchange` }, {
+            onSuccess(data, variables, onMutateResult, context) {
+              setSignature(data, address)
+            },
+          });
+        }
       }
-      // Call your function here
+      // Action to execute right when the user is logged in
+      verifyFunc()
     }
   }, [address, setSignature, getSignature]);
 
