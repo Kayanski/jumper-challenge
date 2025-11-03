@@ -11,6 +11,7 @@ import { TokenList } from "@/components/TokenList";
 import { useIsConnected } from "@/hooks/useIsConnected";
 import { useAccountCreation, useAccountDelete } from "@/hooks/useAccountCreation";
 import { sign } from "crypto";
+import { StyledButton } from "@/components/StyledButton";
 
 export default function Home() {
   const { address } = useAccount();
@@ -70,9 +71,7 @@ export default function Home() {
         alignItems: "flex-end",
         gap: 2
       }}>
-        <Box sx={{ display: "flex", gap: 2 }}>
-          {signature && <Button onClick={() => deleteAccount({ signature })}>Delete Account</Button>}<ThemeToggle />
-        </Box>
+        <ThemeToggle />
         <Box
           sx={{
             p: 4,
@@ -100,21 +99,13 @@ export default function Home() {
           }
           {address && !isConnected && <>
             <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
-              {!isCreatingAccount && <Button
+              {!isCreatingAccount && <StyledButton
                 variant="contained"
                 color="primary"
                 onClick={() => signAndCreateAccount()}
-                sx={{
-                  textTransform: "none",
-                  borderRadius: 3,
-                  px: 4,
-                  py: 1.2,
-                  fontWeight: 700,
-                  boxShadow: 3,
-                }}
               >
                 Verify Account
-              </Button>
+              </StyledButton>
               }
               {isCreatingAccount && <Loader />}
             </Box>
@@ -126,8 +117,11 @@ export default function Home() {
           {address && isConnected &&
             <>{
               balances && <>
-                <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
                   <ConnectButton />
+                  {signature && <StyledButton
+                    variant="contained"
+                    color="primary" onClick={() => deleteAccount({ signature })}>Delete Account</StyledButton>}
                 </Box>
                 <TokenList tokens={balances} />
               </>
