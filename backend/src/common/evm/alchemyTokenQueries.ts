@@ -1,5 +1,8 @@
-const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
-const baseURL = `https://avax-mainnet.g.alchemy.com/v2/${apiKey}`;
+import { env } from '@/common/utils/envConfig';
+
+const alchemyEndpoint = env.ALCHEMY_ENDPOINT;
+const apiKey = env.ALCHEMY_API_KEY;
+const baseURL = `${alchemyEndpoint}/v2/${apiKey}`;
 
 export interface TokenBalance {
     contractAddress: `0x${string}`;
