@@ -1,55 +1,34 @@
 "use client"
-import { Box, Button, Typography, useTheme } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount, useSignMessage } from "wagmi";
+import { useAccount } from "wagmi";
 import Loader from "../components/Loader";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { useQueryTokenBalances } from "@/hooks/useQueryTokenBalances";
-import { useCallback, useEffect, useState } from "react";
 import { useOwnershipSignature } from "@/storage/signature";
 import { TokenList } from "@/components/TokenList";
 import { useIsConnected } from "@/hooks/useIsConnected";
-import { useAccountCreation, useAccountDelete } from "@/hooks/useAccountCreation";
-import { sign } from "crypto";
+import { useAccountDelete } from "@/hooks/useAccountCreation";
 import { StyledButton } from "@/components/StyledButton";
+import { SecondaryText } from "@/components/Text";
+import { useVerifyOwnership } from "@/hooks/useVerifyOwnershipSignature";
+import { useMemo } from "react";
 
 export default function Home() {
-  const { address } = useAccount();
-  const { signature, setSignature, getSignature } = useOwnershipSignature();
-  const { signMessage } = useSignMessage({})
+  const { address, chainId } = useAccount();
+  const { getSignature } = useOwnershipSignature();
+
+  const signature = useMemo(() => {
+    if (!address || !chainId) return null;
+    return getSignature({ address, chainId });
+  }, [address, chainId, getSignature]);
 
   const { data: balances } = useQueryTokenBalances();
   const { data: isConnected } = useIsConnected();
 
-  const [isCreatingAccount, setIsCreatingAccount] = useState(false)
-
-  const { mutateAsync: createAccount } = useAccountCreation();
   const { mutateAsync: deleteAccount } = useAccountDelete();
 
-  const signAndCreateAccount = useCallback(async () => {
-    setIsCreatingAccount(true)
-    if (address) {
-      const signature = getSignature(address)
-      if (!signature) {
-        signMessage({ message: `I am signing into Jumper Exchange` }, {
-          onSuccess(data) {
-            setSignature(data, address);
-            createAccount({ signature: data }).finally(() => {
-              setIsCreatingAccount(false)
-            });
-          },
-          onError() {
-            setIsCreatingAccount(false)
-          }
-        });
-      } else {
-        createAccount({ signature }).finally(() => {
-          setIsCreatingAccount(false)
-        });
-      }
-    }
-
-  }, [address, createAccount, setIsCreatingAccount, getSignature, setSignature, signMessage]);
+  const { isCreatingAccount, signAndCreateAccount } = useVerifyOwnership();
 
   return (
     <Box
@@ -89,16 +68,17 @@ export default function Home() {
           {!address && <><Typography variant="h4" component="h1" sx={{ fontWeight: 700, mb: 1 }}>
             Welcome to the Token Explorer
           </Typography>
-            <Typography variant="body1" sx={{ color: "text.secondary", mb: 3 }}>
+            <SecondaryText sx={{ mb: 3 }}>
               Connect your wallet to get started — we only need your address.
-            </Typography>
+            </SecondaryText>
 
             <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
               <ConnectButton />
             </Box></>
           }
           {address && !isConnected && <>
-            <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2, alignItems: "center", justifyContent: "center", mb: 2 }}>
+              <ConnectButton />
               {!isCreatingAccount && <StyledButton
                 variant="contained"
                 color="primary"
@@ -108,10 +88,11 @@ export default function Home() {
               </StyledButton>
               }
               {isCreatingAccount && <Loader />}
+              <SecondaryText>
+                This is needed in order to fetch your account balance
+              </SecondaryText>
+
             </Box>
-            <Typography variant="body1" sx={{ color: "text.secondary" }}>
-              This is needed in order to fetch your account balance
-            </Typography>
           </>}
 
           {address && isConnected &&
@@ -132,17 +113,17 @@ export default function Home() {
                   <Typography variant="h6" sx={{ mt: 2, fontWeight: 600 }}>
                     Loading Token List…
                   </Typography>
-                  <Typography variant="body2" sx={{ color: "text.secondary", mt: 1 }}>
+                  <SecondaryText sx={{ mt: 1 }}>
                     Preparing your session — this may take a moment.
-                  </Typography>
+                  </SecondaryText>
                 </Box>
                   <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
                     <ConnectButton />
                   </Box>
                   <Box>
-                    <Typography variant="body1" sx={{ color: "text.secondary", mb: 3 }}>
+                    <SecondaryText sx={{ mb: 3 }}>
                       Your Wallet was successfully connected.
-                    </Typography>
+                    </SecondaryText>
                   </Box></>
               }
 

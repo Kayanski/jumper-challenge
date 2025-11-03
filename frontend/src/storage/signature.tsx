@@ -1,31 +1,40 @@
+import { sign } from 'crypto';
 import { get } from 'http'
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 
 
+export interface SignatureParams {
+    address: `0x${string}`;
+    chainId: number;
+}
+
 interface OwnershipSignatureState {
-    signature: `0x${string}` | null;
-    address: `0x${string}` | null;
-    setSignature: (newSignature: `0x${string}`, address: `0x${string}`) => void;
-    getSignature: (address: `0x${string}`) => `0x${string}` | null;
+    signatures: Record<number, Record<`0x${string}`, `0x${string}`>>;
+    addSignature: (params: SignatureParams, newSignature: `0x${string}`) => void;
+    getSignature: (params: SignatureParams) => `0x${string}` | null;
 }
 
 export const useOwnershipSignature = create<OwnershipSignatureState>()(persist(
     (set, get) => ({
-        signature: null,
-        address: null,
-        setSignature: (newSignature: `0x${string}`, address: `0x${string}`) => set({ signature: newSignature, address }),
-        getSignature: (address: `0x${string}`) => {
-            const { signature, address: storedAddress } = get();
-            if (storedAddress === address) {
-                return signature;
+        signatures: {},
+        addSignature: (params: SignatureParams, newSignature) => set({
+            signatures: {
+                ...get().signatures,
+                [params.chainId]: {
+                    ...(get().signatures[params.chainId] || {}),
+                    [params.address]: newSignature
+                }
             }
-            return null;
+        }),
+        getSignature: (params: SignatureParams) => {
+            const { signatures } = get();
+            return signatures[params.chainId]?.[params.address] || null;
         }
     }),
     {
-        name: 'ownership-signature-storage', // name of the item in the storage (must be unique)
-        storage: createJSONStorage(() => sessionStorage), // (optional) by default, 'localStorage' is used
+        name: 'ownership-signature-storage',
+        storage: createJSONStorage(() => localStorage),
     },
 )
 )
