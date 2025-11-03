@@ -12,20 +12,17 @@ export interface TokenBalanceWithInfo {
     symbol: string;
 }
 
-export function useQueryTokenBalances({ signature }: { signature: `0x${string}` | null }) {
+export function useQueryTokenBalances() {
     const { address } = useAccount();
 
     return useQuery<TokenBalanceWithInfo[]>({
-        enabled: !!address && !!signature,
+        enabled: !!address,
         queryKey: ['tokenBalances', address],
         queryFn: async () => {
             if (!address) {
                 throw new Error("Unreachable, no account connected");
             }
-            if (!signature) {
-                throw new Error("Unreachable, ownership message not signed");
-            }
-            const backendTokens = await backendTokenBalances(address, signature);
+            const backendTokens = await backendTokenBalances(address);
             return backendTokens.responseObject;
         },
     });

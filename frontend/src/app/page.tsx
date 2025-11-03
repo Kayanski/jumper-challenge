@@ -15,7 +15,7 @@ export default function Home() {
   const { signature, setSignature, getSignature } = useOwnershipSignature();
   const { signMessage } = useSignMessage({})
 
-  const { data: balances } = useQueryTokenBalances({ signature: signature });
+  const { data: balances } = useQueryTokenBalances();
 
   useEffect(() => {
     const verifyFunc = async () => {

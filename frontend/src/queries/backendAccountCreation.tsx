@@ -3,9 +3,9 @@ import { BackendResponse } from "./backendResponse";
 
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND_ADDRESS!;
 
-export async function backendTokenBalances(address: `0x${string}`): Promise<BackendResponse<TokenBalanceWithInfo[]>> {
+export async function backendAccountCreation(address: `0x${string}`, signature: `0x${string}`): Promise<BackendResponse<TokenBalanceWithInfo[]>> {
 
-    const tokenBalanceUrl = new URL("balance-query", baseUrl,);
+    const tokenBalanceUrl = new URL("account-creation", baseUrl,);
     // Get token balances
     const response = await fetch(tokenBalanceUrl, {
         method: 'POST',
@@ -14,7 +14,8 @@ export async function backendTokenBalances(address: `0x${string}`): Promise<Back
         },
         body: JSON.stringify({
             version: "v1",
-            address: address
+            address: address,
+            signature: signature,
         })
     });
     const jsonResponse = await response.json();
