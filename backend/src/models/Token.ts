@@ -1,11 +1,15 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
 import { Account } from "./Account";
 import { TokenBalance } from "./TokenBalance";
 
 @Entity()
+@Index("token_unique", ["chainId", "contractAddress"], { unique: true })
 export class Token {
     @PrimaryGeneratedColumn()
     id: number;
+
+    @Column({ type: "int" })
+    chainId: number;
 
     @Column({
         type: "varchar",
@@ -19,7 +23,8 @@ export class Token {
     decimals: number;
 
     @Column({
-        type: "varchar"
+        type: "varchar",
+        nullable: true
     })
     logo?: string;
 
@@ -27,7 +32,6 @@ export class Token {
         type: "varchar"
     })
     name: string;
-
 
     @Column({
         type: "varchar"

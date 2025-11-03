@@ -2,7 +2,6 @@
 import { queryClient } from '@/app/providers';
 import { backendAccountCreation } from '@/queries/backendAccountCreation';
 import { backendAccountDelete } from '@/queries/backendAccountDelete';
-import { backendTokenBalances } from '@/queries/backenTokenBalance';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useAccount } from 'wagmi';
 
@@ -16,11 +15,10 @@ export function useAccountCreation() {
 
     return useMutation<boolean, Error, AccountCreationArguments>({
         mutationFn: async ({ signature }: AccountCreationArguments) => {
-
             if (!address) {
                 throw new Error("Unreachable, no account connected");
             }
-            await backendAccountCreation(address, signature);
+            return await backendAccountCreation(address, signature);
             return true
         },
 

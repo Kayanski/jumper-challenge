@@ -49,7 +49,7 @@ export const accountCreationRouter: Router = (() => {
                 required: true,
             },
         },
-        tags: ['Account Deletion'],
+        tags: ['Account Creation'],
         responses: createApiResponse(z.null(), 'Success'),
     });
 
@@ -61,26 +61,26 @@ export const accountCreationRouter: Router = (() => {
             params: AccountVerificationSchema
 
         },
-        tags: ['Account Creation Verification'],
+        tags: ['Account Creation'],
         responses: createApiResponse(z.boolean(), 'Success'), // TODO
     });
 
     router.post('/', async (req: Request, res: Response) => {
+        const accountRepository = AppDataSource.getRepository(Account)
 
         const { version, address, signature } = AccountCreationSchema.parse(req.body);
-
-        await verification({ version, address: address as `0x${string}`, signature: signature as `0x${string}` });
-
-        // We create the account in the database
-        const accountRepository = AppDataSource.getRepository(Account)
-        const account = new Account()
-        account.address = address
-        account.chainId = 1 // For example, Ethereum Mainnet, TODO
-        await accountRepository.save(account)
+        console.log(await accountRepository.findOneBy({ address }))
+        if (!await accountRepository.findOneBy({ address })) {
+            await verification({ version, address: address as `0x${string}`, signature: signature as `0x${string}` });
+            // We create the account in the database
+            const account = new Account()
+            account.address = address
+            account.chainId = 1 // For example, Ethereum Mainnet, TODO
+            await accountRepository.save(account)
+        }
 
         const serviceResponse = new ServiceResponse(ResponseStatus.Success, 'Account Created', null, StatusCodes.OK);
         handleServiceResponse(serviceResponse, res);
-
     });
 
     router.delete('/', async (req: Request, res: Response) => {

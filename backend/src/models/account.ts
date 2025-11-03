@@ -1,7 +1,8 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { TokenBalance } from "./TokenBalance";
 
 @Entity()
+@Index("account_unique", ["chainId", "address"], { unique: true })
 export class Account {
     @PrimaryGeneratedColumn()
     id: number;

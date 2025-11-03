@@ -6,16 +6,13 @@ const baseUrl = process.env.NEXT_PUBLIC_BACKEND_ADDRESS!;
 export async function backendTokenBalances(address: `0x${string}`): Promise<BackendResponse<TokenBalanceWithInfo[]>> {
 
     const tokenBalanceUrl = new URL("balance-query", baseUrl,);
+    tokenBalanceUrl.searchParams.append("address", address);
     // Get token balances
     const response = await fetch(tokenBalanceUrl, {
-        method: 'POST',
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            version: "v1",
-            address: address
-        })
+        }
     });
     const jsonResponse = await response.json();
     return jsonResponse

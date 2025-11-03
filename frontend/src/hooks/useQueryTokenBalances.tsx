@@ -2,6 +2,7 @@
 import { backendTokenBalances } from '@/queries/backenTokenBalance';
 import { useQuery } from '@tanstack/react-query';
 import { useAccount } from 'wagmi';
+import { useIsConnected } from './useIsConnected';
 
 export interface TokenBalanceWithInfo {
     contractAddress: `0x${string}`;
@@ -13,14 +14,18 @@ export interface TokenBalanceWithInfo {
 }
 
 export function useQueryTokenBalances() {
+    const { data: isConnected } = useIsConnected();
     const { address } = useAccount();
 
     return useQuery<TokenBalanceWithInfo[]>({
-        enabled: !!address,
+        enabled: !!address && !!isConnected,
         queryKey: ['tokenBalances', address],
         queryFn: async () => {
             if (!address) {
                 throw new Error("Unreachable, no account connected");
+            }
+            if (!isConnected) {
+                throw new Error("Unreachable, Account is not connected to the backend");
             }
             const backendTokens = await backendTokenBalances(address);
             return backendTokens.responseObject;

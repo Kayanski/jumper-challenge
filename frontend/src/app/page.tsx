@@ -10,6 +10,7 @@ import { useOwnershipSignature } from "@/storage/signature";
 import { TokenList } from "@/components/TokenList";
 import { useIsConnected } from "@/hooks/useIsConnected";
 import { useAccountCreation, useAccountDelete } from "@/hooks/useAccountCreation";
+import { sign } from "crypto";
 
 export default function Home() {
   const { address } = useAccount();

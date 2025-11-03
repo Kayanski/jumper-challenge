@@ -16,6 +16,7 @@ import { DataSource } from 'typeorm';
 import { Account } from './models/Account';
 import { TokenBalance } from './models/TokenBalance';
 import { Token } from './models/Token';
+import { tokenQueryRouter } from './api/tokenQuery/tokenQueryRouter';
 
 
 const logger = pino({ name: 'server start' });
@@ -53,6 +54,7 @@ AppDataSource.initialize().then(() => {
     app.use('/health-check', healthCheckRouter);
     app.use('/account-creation', accountCreationRouter);
     app.use('/balance-query', balanceQueryRouter);
+    app.use('/token', tokenQueryRouter);
 
     // Swagger UI
     app.use(openAPIRouter);
