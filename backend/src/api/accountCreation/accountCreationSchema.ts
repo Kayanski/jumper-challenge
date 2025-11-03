@@ -13,3 +13,7 @@ export const AccountCreationSchema = z.object({
     address: z.string().min(1, "Address is required").startsWith("0x"),
     signature: z.string().min(1, "Signature is required").startsWith("0x"),
 });
+
+export const AccountVerificationSchema = z.object({
+    address: z.string().min(1, "Address is required").startsWith("0x"),
+})

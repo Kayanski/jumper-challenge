@@ -13,7 +13,9 @@ import { env } from '@/common/utils/envConfig';
 import { balanceQueryRouter } from './api/balanceQuery/balanceQueryRouter';
 import { accountCreationRouter } from './api/accountCreation/accountCreationRouter';
 import { DataSource } from 'typeorm';
-import { Account } from './models/account';
+import { Account } from './models/Account';
+import { TokenBalance } from './models/TokenBalance';
+import { Token } from './models/Token';
 
 
 const logger = pino({ name: 'server start' });
@@ -27,7 +29,7 @@ const AppDataSource = new DataSource({
     username: env.POSTGRES_USERNAME,
     password: env.POSTGRES_PASSWORD,
     database: env.POSTGRES_DB,
-    entities: [Account],
+    entities: [Account, TokenBalance, Token],
     synchronize: true,
     logging: false,
 })
