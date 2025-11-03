@@ -16,6 +16,7 @@ import {
     QueryClient,
 } from "@tanstack/react-query";
 import { ReactNode } from 'react';
+import { InitColorSchemeScript } from '@mui/material';
 
 export const config = getDefaultConfig({
     appName: 'Token Explorer App',
@@ -34,6 +35,7 @@ export function ContextProvider({
         <WagmiProvider config={config}>
             <QueryClientProvider client={queryClient}>
                 <RainbowKitProvider>
+                    <InitColorSchemeScript attribute="class" />
                     {children}
                 </RainbowKitProvider>
             </QueryClientProvider>

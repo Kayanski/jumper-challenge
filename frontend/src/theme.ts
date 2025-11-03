@@ -9,13 +9,15 @@ const roboto = Roboto({
 });
 
 const theme = createTheme({
+  cssVariables: {
+    colorSchemeSelector: 'class'
+  },
   typography: {
     fontFamily: roboto.style.fontFamily,
     h1: {
       fontSize: '2rem',
     },
   },
-
   colorSchemes: {
     dark: {
       palette: {

@@ -6,6 +6,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import theme from '../theme';
 import '@rainbow-me/rainbowkit/styles.css';
 import "../index.css"
+import { InitColorSchemeScript } from '@mui/material';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,8 +21,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
+
+
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme} defaultMode="dark" >
             <ContextProvider>

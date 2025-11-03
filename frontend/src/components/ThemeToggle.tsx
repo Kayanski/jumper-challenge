@@ -1,19 +1,19 @@
-import { useColorScheme, useTheme } from "@mui/material";
+import { Theme, useColorScheme, useTheme } from "@mui/material";
 import { useCallback } from "react";
 
 
 export function ThemeToggle() {
-    const { mode, setMode } = useColorScheme();
-    const theme = useTheme();
+    const { mode, setMode, systemMode } = useColorScheme();
 
     const toggleMode = useCallback(() => {
         // determine current effective mode (take system into account)
-        const current = mode === "system" ? theme.palette.mode : mode;
-        setMode(current === "dark" ? "light" : "dark");
-    }, [mode, setMode, theme.palette.mode]);
 
-    const isDark =
-        mode === "system" ? theme.palette.mode === "dark" : mode === "dark";
+        const isDark = mode === "system" ? systemMode : mode === "dark";
+
+        setMode(isDark ? "light" : "dark");
+    }, [mode, setMode]);
+
+    const isDark = mode === "system" ? systemMode : mode === "dark";
 
     return (
         <button
