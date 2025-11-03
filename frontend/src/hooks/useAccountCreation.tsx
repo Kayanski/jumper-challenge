@@ -11,13 +11,12 @@ export interface AccountCreationArguments {
 export function useAccountCreation() {
   const { address, chainId } = useAccount();
 
-  return useMutation<boolean, Error, AccountCreationArguments>({
+  return useMutation<void, Error, AccountCreationArguments>({
     mutationFn: async ({ signature }: AccountCreationArguments) => {
       if (!address || !chainId) {
         throw new Error("Unreachable, no account connected");
       }
-      return await backendAccountCreation({ address, signature, chainId });
-      return true;
+      await backendAccountCreation({ address, signature, chainId });
     },
 
     onSuccess: () => {

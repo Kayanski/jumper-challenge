@@ -88,7 +88,7 @@ export const accountCreationRouter: Router = (() => {
 
     // We create the account in the database
     const accountRepository = AppDataSource.getRepository(Account);
-    await accountRepository.delete({ address: address });
+    await accountRepository.delete({ address: address, chainId });
 
     const serviceResponse = new ServiceResponse(ResponseStatus.Success, 'Account Deleted', null, StatusCodes.OK);
     handleServiceResponse(serviceResponse, res);

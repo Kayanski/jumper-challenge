@@ -14,7 +14,7 @@ export async function backendAccountCreation({
   signature,
   chainId,
 }: BackendAccountCreationParams): Promise<
-  BackendResponse<TokenBalanceWithInfo[]>
+  BackendResponse<boolean>
 > {
   const tokenBalanceUrl = new URL("account-creation", baseUrl);
   // Get token balances
