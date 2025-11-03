@@ -11,7 +11,7 @@ export function ThemeToggle() {
         const isDark = mode === "system" ? systemMode : mode === "dark";
 
         setMode(isDark ? "light" : "dark");
-    }, [mode, setMode]);
+    }, [mode, setMode, systemMode]);
 
     const isDark = mode === "system" ? systemMode : mode === "dark";
 

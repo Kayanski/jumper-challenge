@@ -49,7 +49,7 @@ export default function Home() {
       }
     }
 
-  }, [address, signature, createAccount, setIsCreatingAccount]);
+  }, [address, createAccount, setIsCreatingAccount, getSignature, setSignature, signMessage]);
 
   return (
     <Box
