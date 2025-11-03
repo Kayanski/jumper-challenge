@@ -18,7 +18,7 @@ export function useQueryTokenBalances() {
 
   return useQuery<TokenBalanceWithInfo[]>({
     enabled: !!address && !!isConnected && !!chainId,
-    queryKey: ["tokenBalances", address],
+    queryKey: ["tokenBalances", chainId, address],
     queryFn: async () => {
       if (!address || !chainId) {
         throw new Error("Unreachable, no account connected");

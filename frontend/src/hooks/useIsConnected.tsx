@@ -7,7 +7,7 @@ export function useIsConnected() {
 
   return useQuery<boolean>({
     enabled: !!address && !!chainId,
-    queryKey: ["isConnected", address, chainId],
+    queryKey: ["isConnected", chainId, address],
     queryFn: async () => {
       if (!address || !chainId) {
         throw new Error("Unreachable, no account connected");

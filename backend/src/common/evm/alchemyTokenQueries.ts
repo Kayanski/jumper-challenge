@@ -1,8 +1,14 @@
 import { env } from '@/common/utils/envConfig';
+import { getAlchemyEndpoint } from './alchemyEnpoint';
 
-const alchemyEndpoint = env.ALCHEMY_ENDPOINT;
+
 const apiKey = env.ALCHEMY_API_KEY;
-const baseURL = `${alchemyEndpoint}/v2/${apiKey}`;
+
+function baseUrl(chainId: number): URL {
+  const alchemyEndpoint = getAlchemyEndpoint(chainId);
+  return new URL(`/v2/${apiKey}`, alchemyEndpoint)
+
+}
 
 export interface TokenBalance {
   contractAddress: `0x${string}`;
@@ -14,9 +20,9 @@ export interface TokenBalances {
   tokenBalances: TokenBalance[];
 }
 
-export async function alchemyTokenBalances(address: `0x${string}`): Promise<TokenBalances> {
+export async function alchemyTokenBalances(chainId: number, address: `0x${string}`): Promise<TokenBalances> {
   // Get token balances
-  const response = await fetch(baseURL, {
+  const response = await fetch(baseUrl(chainId), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -40,9 +46,9 @@ export interface TokenInfo {
   symbol: string;
 }
 
-export async function alchemyTokenInfo(addresses: `0x${string}`[]): Promise<TokenInfo[]> {
+export async function alchemyTokenInfo(chainId: number, addresses: `0x${string}`[]): Promise<TokenInfo[]> {
   // Get token balances
-  const response = await fetch(baseURL, {
+  const response = await fetch(baseUrl(chainId), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

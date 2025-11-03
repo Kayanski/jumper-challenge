@@ -6,14 +6,11 @@ extendZodWithOpenApi(z);
 import { createApiResponse } from '@/api-docs/openAPIResponseBuilders';
 import { ResponseStatus, ServiceResponse } from '@/common/models/serviceResponse';
 import { handleServiceResponse } from '@/common/utils/httpHandlers';
-import { publicClient } from '@/common/evm/viemClient';
 import { StatusCodes } from 'http-status-codes';
 import {
   AccountCreationSchema,
-  AccountCreationSchemaMessage,
-  AccountCreationSchemaVersion,
   AccountVerificationSchema,
-} from './accountCreationSchema';
+} from '../../schemas/accountCreationSchema';
 import { AppDataSource } from '@/server';
 import { verification } from './verification';
 import { Account } from '@/models/Account';
@@ -64,20 +61,19 @@ export const accountCreationRouter: Router = (() => {
       params: AccountVerificationSchema,
     },
     tags: ['Account Creation'],
-    responses: createApiResponse(z.boolean(), 'Success'), // TODO
+    responses: createApiResponse(z.boolean(), 'Success'),
   });
 
   router.post('/', async (req: Request, res: Response) => {
     const accountRepository = AppDataSource.getRepository(Account);
 
-    const { version, address, signature } = AccountCreationSchema.parse(req.body);
-    console.log(await accountRepository.findOneBy({ address }));
-    if (!(await accountRepository.findOneBy({ address }))) {
-      await verification({ version, address: address as `0x${string}`, signature: signature as `0x${string}` });
+    const { version, address, signature, chainId } = AccountCreationSchema.parse(req.body);
+    if (!(await accountRepository.findOneBy({ address, chainId }))) {
+      await verification({ version, address: address as `0x${string}`, signature: signature as `0x${string}`, chainId });
       // We create the account in the database
       const account = new Account();
       account.address = address;
-      account.chainId = 1; // For example, Ethereum Mainnet, TODO
+      account.chainId = chainId;
       await accountRepository.save(account);
     }
 
@@ -86,9 +82,9 @@ export const accountCreationRouter: Router = (() => {
   });
 
   router.delete('/', async (req: Request, res: Response) => {
-    const { version, address, signature } = AccountCreationSchema.parse(req.body);
+    const { version, address, signature, chainId } = AccountCreationSchema.parse(req.body);
 
-    await verification({ version, address: address as `0x${string}`, signature: signature as `0x${string}` });
+    await verification({ version, address: address as `0x${string}`, signature: signature as `0x${string}`, chainId });
 
     // We create the account in the database
     const accountRepository = AppDataSource.getRepository(Account);
@@ -99,9 +95,9 @@ export const accountCreationRouter: Router = (() => {
   });
 
   router.get('/verify', async (req: Request, res: Response) => {
-    const { address } = AccountVerificationSchema.parse(req.query);
+    const { address, chainId } = AccountVerificationSchema.parse(req.query);
     const accountRepository = AppDataSource.getRepository(Account);
-    const account = await accountRepository.findOneBy({ address: address });
+    const account = await accountRepository.findOneBy({ address, chainId });
 
     let serviceResponse: ServiceResponse<boolean>;
     if (account) {

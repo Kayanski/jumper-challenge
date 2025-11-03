@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { createApiResponse } from '@/api-docs/openAPIResponseBuilders';
 import { ResponseStatus, ServiceResponse } from '@/common/models/serviceResponse';
 import { handleServiceResponse } from '@/common/utils/httpHandlers';
-import { BalanceQuerySchema } from './balanceQuerySchema';
+import { AllBalancesResponseSchema, BalanceQuerySchema, BalanceResponseSchema } from '../../schemas/balanceQuerySchema';
 import { publicClient } from '@/common/evm/viemClient';
 import { alchemyTokenBalances, alchemyTokenInfo } from '@/common/evm/alchemyTokenQueries';
 import { StatusCodes } from 'http-status-codes';
@@ -22,20 +22,20 @@ export const balanceQueryRouter: Router = (() => {
     method: 'get',
     path: '/balance-query',
     request: {
-      params: BalanceQuerySchema,
+      query: BalanceQuerySchema,
     },
     tags: ['Balance Query'],
-    responses: createApiResponse(z.null(), 'Success'), // TODO
+    responses: createApiResponse(BalanceResponseSchema, 'Success')
   });
 
   router.get('/', async (req: Request, res: Response) => {
     // Here we handle the balance query logic
-    const { address } = BalanceQuerySchema.parse(req.query);
+    const { address, chainId } = BalanceQuerySchema.parse(req.query);
 
-    const balanceResponse = await balanceQuery({ address });
+    const balanceResponse = await balanceQuery({ address, chainId });
     const serviceResponse = new ServiceResponse(
       ResponseStatus.Success,
-      'Service is healthy',
+      'Query balance for address successful',
       balanceResponse,
       StatusCodes.OK
     );
@@ -46,15 +46,20 @@ export const balanceQueryRouter: Router = (() => {
     method: 'get',
     path: '/balance-query/all',
     tags: ['Balance Query'],
-    responses: createApiResponse(z.null(), 'Success'), // TODO
+    responses: createApiResponse(AllBalancesResponseSchema, 'Success'),
   });
 
   router.get('/all', async (req: Request, res: Response) => {
     const tokenBalancesRepository = AppDataSource.getRepository(TokenBalance);
 
-    const balances = tokenBalancesRepository.find();
+    const balances = await tokenBalancesRepository.find({
+      relations: {
+        token: true,
+        user: true,
+      }
+    });
 
-    const serviceResponse = new ServiceResponse(ResponseStatus.Success, 'Service is healthy', balances, StatusCodes.OK);
+    const serviceResponse = new ServiceResponse(ResponseStatus.Success, "All Balances fetched", balances, StatusCodes.OK);
     handleServiceResponse(serviceResponse, res);
   });
 

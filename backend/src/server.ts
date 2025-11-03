@@ -49,7 +49,7 @@ AppDataSource.initialize().then(() => {
   app.use('/health-check', healthCheckRouter);
   app.use('/account-creation', accountCreationRouter);
   app.use('/balance-query', balanceQueryRouter);
-  app.use('/token', tokenQueryRouter);
+  app.use('/tokens', tokenQueryRouter);
 
   // Swagger UI
   app.use(openAPIRouter);

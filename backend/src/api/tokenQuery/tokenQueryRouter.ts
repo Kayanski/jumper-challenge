@@ -7,17 +7,19 @@ import { handleServiceResponse } from '@/common/utils/httpHandlers';
 import { StatusCodes } from 'http-status-codes';
 import { AppDataSource } from '@/server';
 import { Token } from '@/models/Token';
+import { TokenMetadataResponseSchema } from '@/schemas/tokenQuerySchema';
 
 export const tokenQueryRegistry = new OpenAPIRegistry();
 
+// One should add other routes to query tokens by different parameters
 export const tokenQueryRouter: Router = (() => {
   const router = express.Router();
 
   tokenQueryRegistry.registerPath({
     method: 'get',
-    path: '/token',
+    path: '/tokens',
     tags: ['Token Query'],
-    responses: createApiResponse(z.null(), 'Success'), // TODO
+    responses: createApiResponse(TokenMetadataResponseSchema, 'Success'),
   });
 
   router.get('/', async (req: Request, res: Response) => {
@@ -25,7 +27,11 @@ export const tokenQueryRouter: Router = (() => {
     const tokenRegistry = AppDataSource.getRepository(Token);
 
     const tokens = await tokenRegistry.find();
-    const serviceResponse = new ServiceResponse(ResponseStatus.Success, 'Service is healthy', tokens, StatusCodes.OK);
+    const serviceResponse = new ServiceResponse(
+      ResponseStatus.Success,
+      'Query all tokens success',
+      tokens, StatusCodes.OK
+    );
     handleServiceResponse(serviceResponse, res);
   });
 

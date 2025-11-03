@@ -6,16 +6,17 @@ import { AppDataSource } from '@/server';
 
 export interface BalanceQueryParams {
   address: string;
+  chainId: number;
 }
 
-export async function balanceQuery({ address }: BalanceQueryParams) {
-  const alchemyTokens = await alchemyTokenBalances(address as `0x${string}`);
+export async function balanceQuery({ address, chainId }: BalanceQueryParams) {
+  const alchemyTokens = await alchemyTokenBalances(chainId, address as `0x${string}`);
   if (!alchemyTokens) {
     throw new Error('Failed to fetch token balances'); // TODO error handling
   }
   const tokenBalances = alchemyTokens.tokenBalances.filter((tb) => tb.tokenBalance != BigInt(0));
 
-  const tokenInfo = await alchemyTokenInfo(tokenBalances.map((tb) => tb.contractAddress));
+  const tokenInfo = await alchemyTokenInfo(chainId, tokenBalances.map((tb) => tb.contractAddress));
   // We update token info in database
   const tokenInfoRepository = AppDataSource.getRepository(Token);
   const tokenBalanceRepository = AppDataSource.getRepository(TokenBalance);
@@ -26,7 +27,7 @@ export async function balanceQuery({ address }: BalanceQueryParams) {
     tokenInfo.map((info) => {
       return {
         contractAddress: info.contractAddress,
-        chainId: 1, // TODO: replace with actual chain ID
+        chainId: chainId,
         decimals: info.decimals ?? 0,
         logo: info.logo,
         name: info.name,

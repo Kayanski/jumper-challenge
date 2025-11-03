@@ -14,6 +14,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { TokenBalanceWithInfo } from "@/hooks/useQueryTokenBalances";
 import { useState } from "react";
+import { useAccount, useChainId, useChains } from "wagmi";
 
 export enum TokenRowMode {
   DEFAULT,
@@ -27,6 +28,10 @@ export function TokenRow({
   token: TokenBalanceWithInfo;
   mode?: TokenRowMode;
 }) {
+
+  const chainId = useChains();
+  const { chain } = useAccount()
+
   const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
 
   const copyToClipboard = (address: `0x${string}`) => {
@@ -204,10 +209,10 @@ export function TokenRow({
                 )}
               </IconButton>
             </Tooltip>
-            <Tooltip title="View on Etherscan">
+            <Tooltip title={`View on ${chain?.blockExplorers?.default.name}`}>
               <IconButton
                 component="a"
-                href={`https://etherscan.io/address/${token.contractAddress}`}
+                href={`${chain?.blockExplorers?.default.url}/address/${token.contractAddress}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 sx={{
