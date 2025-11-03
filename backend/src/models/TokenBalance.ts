@@ -11,7 +11,7 @@ export class TokenBalance {
   @ManyToOne(() => Account, (user) => user.balances, { onDelete: 'CASCADE' })
   user: Account;
 
-  @ManyToOne(() => Token, (token) => token.balances)
+  @ManyToOne(() => Token, (token) => token.balances, { onDelete: 'CASCADE' })
   token: Token;
 
   @Column({ type: 'varchar' })
