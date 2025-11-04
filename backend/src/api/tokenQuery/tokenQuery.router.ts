@@ -6,8 +6,9 @@ import { ResponseStatus, ServiceResponse } from '@/common/models/serviceResponse
 import { handleServiceResponse } from '@/common/utils/httpHandlers';
 import { StatusCodes } from 'http-status-codes';
 import { AppDataSource } from '@/server';
-import { Token } from '@/models/Token';
-import { TokenMetadataResponseSchema } from '@/schemas/tokenQuerySchema';
+import { Token } from '@/models/Token.model';
+import { TokenMetadataResponseSchema } from '@/schemas/TokenQuery.schema';
+import { getAllTokens } from '@/service/tokens/tokens.service';
 
 export const tokenQueryRegistry = new OpenAPIRegistry();
 
@@ -23,10 +24,7 @@ export const tokenQueryRouter: Router = (() => {
   });
 
   router.get('/', async (req: Request, res: Response) => {
-    // Here we handle the balance query logic
-    const tokenRegistry = AppDataSource.getRepository(Token);
-
-    const tokens = await tokenRegistry.find();
+    const tokens = await getAllTokens();
     const serviceResponse = new ServiceResponse(
       ResponseStatus.Success,
       'Query all tokens success',

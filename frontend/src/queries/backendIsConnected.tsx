@@ -12,7 +12,7 @@ export async function backendIsConnected({
   address,
   chainId,
 }: BackendIsConnectedParams): Promise<BackendResponse<boolean>> {
-  const accountVerificationUrl = new URL("account-creation/verify", baseUrl);
+  const accountVerificationUrl = new URL("account/verify", baseUrl);
   accountVerificationUrl.searchParams.append("address", address);
   accountVerificationUrl.searchParams.append("chainId", chainId.toString());
 

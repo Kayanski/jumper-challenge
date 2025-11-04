@@ -1,4 +1,4 @@
-# 🚀 Jumper challenge backend
+# 🚀 Token Explorer Backend
 
 ## 🛠️ Getting Started
 
@@ -10,6 +10,10 @@
 
 - Create `.env`: Copy `.env.template` to `.env`
 - Update `.env`: Fill in necessary environment variables
+
+    **_NOTE:_** This project uses the Alchemy endpoints to fetch token balances and metadata.
+Please create an account on Alchemy and set the `ALCHEMY_API_KEY` variable to get started.
+You shouldn't need to modify the env alchemy endpoint URLs.
 
 ### Step 3: 🏃‍♂️ Running the Project
 

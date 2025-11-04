@@ -16,9 +16,9 @@ export async function backendAccountDelete({
 }: BackendAccountDeleteParams): Promise<
   BackendResponse<TokenBalanceWithInfo[]>
 > {
-  const tokenBalanceUrl = new URL("account-creation", baseUrl);
+  const accountDeleteUrl = new URL("account", baseUrl);
   // Get token balances
-  const response = await fetch(tokenBalanceUrl, {
+  const response = await fetch(accountDeleteUrl, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",

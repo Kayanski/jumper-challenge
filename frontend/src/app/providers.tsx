@@ -16,7 +16,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export const config = getDefaultConfig({
   appName: "Token Explorer App",
-  projectId: "dbec11baf629e0419c8e2f7a5a99186f",
+  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!,
   chains: [mainnet, polygon, optimism, arbitrum, base, avalanche],
   ssr: true, // If your dApp uses server side rendering (SSR)
 });

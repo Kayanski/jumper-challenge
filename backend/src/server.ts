@@ -9,13 +9,13 @@ import errorHandler from '@/common/middleware/errorHandler';
 import rateLimiter from '@/common/middleware/rateLimiter';
 import requestLogger from '@/common/middleware/requestLogger';
 import { env } from '@/common/utils/envConfig';
-import { balanceQueryRouter } from './api/balanceQuery/balanceQueryRouter';
-import { accountCreationRouter } from './api/accountCreation/accountCreationRouter';
+import { balanceQueryRouter } from './api/balanceQuery/balanceQuery.router';
+import { accountCreationRouter } from './api/account/account.router';
 import { DataSource } from 'typeorm';
-import { Account } from './models/Account';
-import { TokenBalance } from './models/TokenBalance';
-import { Token } from './models/Token';
-import { tokenQueryRouter } from './api/tokenQuery/tokenQueryRouter';
+import { Account } from './models/Account.model';
+import { TokenBalance } from './models/TokenBalance.model';
+import { Token } from './models/Token.model';
+import { tokenQueryRouter } from './api/tokenQuery/tokenQuery.router';
 
 const logger = pino({ name: 'server start' });
 const app: Express = express();
@@ -47,7 +47,7 @@ AppDataSource.initialize().then(() => {
 
   // Routes
   app.use('/health-check', healthCheckRouter);
-  app.use('/account-creation', accountCreationRouter);
+  app.use('/account', accountCreationRouter);
   app.use('/balance-query', balanceQueryRouter);
   app.use('/tokens', tokenQueryRouter);
 

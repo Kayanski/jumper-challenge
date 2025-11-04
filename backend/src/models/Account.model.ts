@@ -1,5 +1,5 @@
 import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { TokenBalance } from './TokenBalance';
+import { TokenBalance } from './TokenBalance.model';
 
 @Entity()
 @Index('account_unique', ['chainId', 'address'], { unique: true })

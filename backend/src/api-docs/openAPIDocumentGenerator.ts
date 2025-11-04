@@ -1,9 +1,9 @@
 import { OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 
 import { healthCheckRegistry } from '@/api/healthCheck/healthCheckRouter';
-import { balanceQueryRegistry } from '@/api/balanceQuery/balanceQueryRouter';
-import { accountCreationRegistry } from '@/api/accountCreation/accountCreationRouter';
-import { tokenQueryRegistry } from '@/api/tokenQuery/tokenQueryRouter';
+import { balanceQueryRegistry } from '@/api/balanceQuery/balanceQuery.router';
+import { accountCreationRegistry } from '@/api/account/account.router';
+import { tokenQueryRegistry } from '@/api/tokenQuery/tokenQuery.router';
 
 export function generateOpenAPIDocument() {
   const registry = new OpenAPIRegistry([

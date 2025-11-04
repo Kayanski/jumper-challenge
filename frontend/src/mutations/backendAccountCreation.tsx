@@ -16,9 +16,9 @@ export async function backendAccountCreation({
 }: BackendAccountCreationParams): Promise<
   BackendResponse<boolean>
 > {
-  const tokenBalanceUrl = new URL("account-creation", baseUrl);
+  const accountCreationUrl = new URL("account", baseUrl);
   // Get token balances
-  const response = await fetch(tokenBalanceUrl, {
+  const response = await fetch(accountCreationUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -5,13 +5,13 @@ import { z } from 'zod';
 import { createApiResponse } from '@/api-docs/openAPIResponseBuilders';
 import { ResponseStatus, ServiceResponse } from '@/common/models/serviceResponse';
 import { handleServiceResponse } from '@/common/utils/httpHandlers';
-import { AllBalancesResponseSchema, BalanceQuerySchema, BalanceResponseSchema } from '../../schemas/balanceQuerySchema';
+import { AllBalancesResponseSchema, BalanceQuerySchema, BalanceResponseSchema } from '../../schemas/BalanceQuery.schema';
 import { publicClient } from '@/common/evm/viemClient';
 import { alchemyTokenBalances, alchemyTokenInfo } from '@/common/evm/alchemyTokenQueries';
 import { StatusCodes } from 'http-status-codes';
-import { balanceQuery } from './query';
 import { AppDataSource } from '@/server';
-import { TokenBalance } from '@/models/TokenBalance';
+import { TokenBalance } from '@/models/TokenBalance.model';
+import { balanceQuery, getAllBalances } from '@/service/balance/balanceQuery.service';
 
 export const balanceQueryRegistry = new OpenAPIRegistry();
 
@@ -29,7 +29,6 @@ export const balanceQueryRouter: Router = (() => {
   });
 
   router.get('/', async (req: Request, res: Response) => {
-    // Here we handle the balance query logic
     const { address, chainId } = BalanceQuerySchema.parse(req.query);
 
     const balanceResponse = await balanceQuery({ address, chainId });
@@ -50,14 +49,7 @@ export const balanceQueryRouter: Router = (() => {
   });
 
   router.get('/all', async (req: Request, res: Response) => {
-    const tokenBalancesRepository = AppDataSource.getRepository(TokenBalance);
-
-    const balances = await tokenBalancesRepository.find({
-      relations: {
-        token: true,
-        user: true,
-      }
-    });
+    const balances = await getAllBalances()
 
     const serviceResponse = new ServiceResponse(ResponseStatus.Success, "All Balances fetched", balances, StatusCodes.OK);
     handleServiceResponse(serviceResponse, res);

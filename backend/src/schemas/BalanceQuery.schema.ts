@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { TokenMetadataResponseSchema } from './tokenQuerySchema';
-import { AccountResponseSchema } from './accountCreationSchema';
+import { TokenMetadataResponseSchema } from './TokenQuery.schema';
+import { AccountResponseSchema } from './AccountLifecycle.schema';
 
 export const BalanceQuerySchema = z.object({
   address: z.string().min(1, 'Address is required').startsWith('0x'),

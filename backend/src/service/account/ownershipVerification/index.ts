@@ -1,4 +1,4 @@
-import { AccountCreationSchemaVersion } from '../../../schemas/accountCreationSchema';
+import { AccountCreationSchemaVersion } from '../../../schemas/AccountLifecycle.schema';
 import { verificationV1 } from './v1';
 
 

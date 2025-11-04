@@ -10,10 +10,11 @@ import { StatusCodes } from 'http-status-codes';
 import {
   AccountCreationSchema,
   AccountVerificationSchema,
-} from '../../schemas/accountCreationSchema';
+} from '../../schemas/AccountLifecycle.schema';
 import { AppDataSource } from '@/server';
-import { verification } from './ownershipVerification';
-import { Account } from '@/models/Account';
+import { verification } from '../../service/account/ownershipVerification';
+import { Account } from '@/models/Account.model';
+import { createAccount, deleteAccount, verifyAccount } from '@/service/account/account.service';
 
 export const accountCreationRegistry = new OpenAPIRegistry();
 
@@ -22,7 +23,7 @@ export const accountCreationRouter: Router = (() => {
 
   accountCreationRegistry.registerPath({
     method: 'post',
-    path: '/account-creation',
+    path: '/account',
     request: {
       body: {
         content: {
@@ -33,13 +34,21 @@ export const accountCreationRouter: Router = (() => {
         required: true,
       },
     },
-    tags: ['Account Creation'],
+    tags: ['Account'],
     responses: createApiResponse(z.null(), 'Success'),
+  });
+
+  router.post('/', async (req: Request, res: Response) => {
+    const { version, address, signature, chainId } = AccountCreationSchema.parse(req.body);
+    await createAccount({ version, address, signature, chainId });
+
+    const serviceResponse = new ServiceResponse(ResponseStatus.Success, 'Account Created', null, StatusCodes.OK);
+    handleServiceResponse(serviceResponse, res);
   });
 
   accountCreationRegistry.registerPath({
     method: 'delete',
-    path: '/account-creation',
+    path: '/account',
     request: {
       body: {
         content: {
@@ -50,57 +59,32 @@ export const accountCreationRouter: Router = (() => {
         required: true,
       },
     },
-    tags: ['Account Creation'],
+    tags: ['Account'],
     responses: createApiResponse(z.null(), 'Success'),
+  });
+  router.delete('/', async (req: Request, res: Response) => {
+    const { version, address, signature, chainId } = AccountCreationSchema.parse(req.body);
+    await deleteAccount({ version, address, signature, chainId });
+
+    const serviceResponse = new ServiceResponse(ResponseStatus.Success, 'Account Deleted', null, StatusCodes.OK);
+    handleServiceResponse(serviceResponse, res);
   });
 
   accountCreationRegistry.registerPath({
     method: 'get',
-    path: '/account-creation/verify',
+    path: '/account/verify',
     request: {
       params: AccountVerificationSchema,
     },
     tags: ['Account Creation'],
     responses: createApiResponse(z.boolean(), 'Success'),
   });
-
-  router.post('/', async (req: Request, res: Response) => {
-    const accountRepository = AppDataSource.getRepository(Account);
-
-    const { version, address, signature, chainId } = AccountCreationSchema.parse(req.body);
-    if (!(await accountRepository.findOneBy({ address, chainId }))) {
-      await verification({ version, address: address as `0x${string}`, signature: signature as `0x${string}`, chainId });
-      // We create the account in the database
-      const account = new Account();
-      account.address = address;
-      account.chainId = chainId;
-      await accountRepository.save(account);
-    }
-
-    const serviceResponse = new ServiceResponse(ResponseStatus.Success, 'Account Created', null, StatusCodes.OK);
-    handleServiceResponse(serviceResponse, res);
-  });
-
-  router.delete('/', async (req: Request, res: Response) => {
-    const { version, address, signature, chainId } = AccountCreationSchema.parse(req.body);
-
-    await verification({ version, address: address as `0x${string}`, signature: signature as `0x${string}`, chainId });
-
-    // We delete the account from the database
-    const accountRepository = AppDataSource.getRepository(Account);
-    await accountRepository.delete({ address: address, chainId });
-
-    const serviceResponse = new ServiceResponse(ResponseStatus.Success, 'Account Deleted', null, StatusCodes.OK);
-    handleServiceResponse(serviceResponse, res);
-  });
-
   router.get('/verify', async (req: Request, res: Response) => {
     const { address, chainId } = AccountVerificationSchema.parse(req.query);
-    const accountRepository = AppDataSource.getRepository(Account);
-    const account = await accountRepository.findOneBy({ address, chainId });
+    const hasAccount = await verifyAccount({ address, chainId });
 
     let serviceResponse: ServiceResponse<boolean>;
-    if (account) {
+    if (hasAccount) {
       serviceResponse = new ServiceResponse(
         ResponseStatus.Success,
         'Account Verification Successful',

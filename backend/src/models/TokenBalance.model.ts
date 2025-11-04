@@ -1,6 +1,6 @@
 import { Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Account } from './Account';
-import { Token } from './Token';
+import { Account } from './Account.model';
+import { Token } from './Token.model';
 
 @Entity()
 @Index('token_balance_unique', ['user.id', 'token.id'], { unique: true })
