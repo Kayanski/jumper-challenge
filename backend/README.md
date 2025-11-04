@@ -21,3 +21,10 @@
 - Development Mode: `npm run dev`
 - Building: `npm run build`
 - Production Mode: Set `.env` to `NODE_ENV="production"` then `npm run build && npm run start`
+
+### Running tests
+
+In order for the tests to run, you should respect the following:
+
+- The alchemy endpoints for the chain that you query should be specified in env variables.
+- The Alchemy Token should be defined in the env variables
