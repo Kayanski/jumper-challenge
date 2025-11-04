@@ -28,7 +28,8 @@ export const tokenQueryRouter: Router = (() => {
     const serviceResponse = new ServiceResponse(
       ResponseStatus.Success,
       'Query all tokens success',
-      tokens, StatusCodes.OK
+      tokens,
+      StatusCodes.OK
     );
     handleServiceResponse(serviceResponse, res);
   });

@@ -9,12 +9,16 @@ export interface AccountCreationMessageParams {
   chainId: number;
 }
 
-export const AccountCreationMessage: Record<AccountCreationSchemaVersion, (params: AccountCreationMessageParams) => string> = {
-  [AccountCreationSchemaVersion.V1]: ({ address, chainId }) => JSON.stringify({
-    message: "Verify ownership of this address",
-    address,
-    chainId,
-  })
+export const AccountCreationMessage: Record<
+  AccountCreationSchemaVersion,
+  (params: AccountCreationMessageParams) => string
+> = {
+  [AccountCreationSchemaVersion.V1]: ({ address, chainId }) =>
+    JSON.stringify({
+      message: 'Verify ownership of this address',
+      address,
+      chainId,
+    }),
 };
 
 export const AccountCreationSchema = z.object({
@@ -26,13 +30,11 @@ export const AccountCreationSchema = z.object({
 
 export const AccountVerificationSchema = z.object({
   address: z.string().min(1, 'Address is required').startsWith('0x'),
-  chainId: z.string().transform((val) => parseInt(val, 10))
+  chainId: z.string().transform((val) => parseInt(val, 10)),
 });
-
 
 export const AccountResponseSchema = z.object({
   id: z.number(),
   chainId: z.number().min(1),
-  address: z.string().min(1).startsWith('0x')
-
-})
+  address: z.string().min(1).startsWith('0x'),
+});

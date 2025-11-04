@@ -1,21 +1,14 @@
-"use client";
-import { getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rainbowkit";
-import { WagmiProvider } from "wagmi";
-import {
-  mainnet,
-  polygon,
-  optimism,
-  arbitrum,
-  base,
-  avalanche,
-} from "wagmi/chains";
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
-import { ReactNode } from "react";
-import { InitColorSchemeScript } from "@mui/material";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+'use client';
+import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { WagmiProvider } from 'wagmi';
+import { mainnet, polygon, optimism, arbitrum, base, avalanche } from 'wagmi/chains';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import { ReactNode } from 'react';
+import { InitColorSchemeScript } from '@mui/material';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 export const config = getDefaultConfig({
-  appName: "Token Explorer App",
+  appName: 'Token Explorer App',
   projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!,
   chains: [mainnet, polygon, optimism, arbitrum, base, avalanche],
   ssr: true, // If your dApp uses server side rendering (SSR)

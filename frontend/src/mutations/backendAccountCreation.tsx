@@ -1,5 +1,5 @@
-import { TokenBalanceWithInfo } from "@/hooks/useQueryTokenBalances";
-import { BackendResponse } from "../queries/backendResponse";
+import { TokenBalanceWithInfo } from '@/hooks/useQueryTokenBalances';
+import { BackendResponse } from '../queries/backendResponse';
 
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND_ADDRESS!;
 
@@ -13,18 +13,16 @@ export async function backendAccountCreation({
   address,
   signature,
   chainId,
-}: BackendAccountCreationParams): Promise<
-  BackendResponse<boolean>
-> {
-  const accountCreationUrl = new URL("account", baseUrl);
+}: BackendAccountCreationParams): Promise<BackendResponse<boolean>> {
+  const accountCreationUrl = new URL('account', baseUrl);
   // Get token balances
   const response = await fetch(accountCreationUrl, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      version: "v1",
+      version: 'v1',
       address,
       signature,
       chainId,

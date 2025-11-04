@@ -1,13 +1,11 @@
 import { env } from '@/common/utils/envConfig';
 import { getAlchemyEndpoint } from './alchemyEnpoint';
 
-
 const apiKey = env.ALCHEMY_API_KEY;
 
 function baseUrl(chainId: number): URL {
   const alchemyEndpoint = getAlchemyEndpoint(chainId);
-  return new URL(`/v2/${apiKey}`, alchemyEndpoint)
-
+  return new URL(`/v2/${apiKey}`, alchemyEndpoint);
 }
 
 export interface TokenBalance {

@@ -1,7 +1,7 @@
-import { Button, styled } from "@mui/material";
+import { Button, styled } from '@mui/material';
 
 export const StyledButton = styled(Button)(({ theme }) => ({
-  textTransform: "none",
+  textTransform: 'none',
   borderRadius: 3,
   px: 4,
   py: 1.2,

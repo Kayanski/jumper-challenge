@@ -1,8 +1,8 @@
-import { TokenBalanceWithInfo } from "@/hooks/useQueryTokenBalances";
-import { Button, Stack } from "@mui/material";
-import { TokenRow, TokenRowMode } from "./TokenRow";
-import React, { useMemo, useState } from "react";
-import { SecondaryText } from "./Text";
+import { TokenBalanceWithInfo } from '@/hooks/useQueryTokenBalances';
+import { Button, Stack } from '@mui/material';
+import { TokenRow, TokenRowMode } from './TokenRow';
+import React, { useMemo, useState } from 'react';
+import { SecondaryText } from './Text';
 
 export function TokenList({ tokens }: { tokens: TokenBalanceWithInfo[] }) {
   const [safeTokens, potentialSpamTokens] = useMemo(() => {
@@ -28,11 +28,9 @@ export function TokenList({ tokens }: { tokens: TokenBalanceWithInfo[] }) {
           <TokenRow key={index} token={token} />
         ))}
 
-        {safeTokens.length === 0 &&
-          <SecondaryText>No tokens found in your account.</SecondaryText>
-        }
+        {safeTokens.length === 0 && <SecondaryText>No tokens found in your account.</SecondaryText>}
       </Stack>
-      {potentialSpamTokens.length !== 0 &&
+      {potentialSpamTokens.length !== 0 && (
         <Button
           fullWidth
           onClick={() => setShowSpam(!showSpam)}
@@ -40,20 +38,19 @@ export function TokenList({ tokens }: { tokens: TokenBalanceWithInfo[] }) {
           sx={{
             py: 1.5,
             my: 5,
-            bgcolor: "background.default",
-            backdropFilter: "blur(10px)",
-            border: "1px solid background.paper",
-            color: "text.primary",
+            bgcolor: 'background.default',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid background.paper',
+            color: 'text.primary',
             fontWeight: 500,
-            "&:hover": {
-              borderColor: "error.main",
+            '&:hover': {
+              borderColor: 'error.main',
             },
           }}
         >
-          {showSpam ? "Hide" : "Show"} Potential Spam Tokens (
-          {potentialSpamTokens.length})
+          {showSpam ? 'Hide' : 'Show'} Potential Spam Tokens ({potentialSpamTokens.length})
         </Button>
-      }
+      )}
 
       {showSpam && (
         <Stack spacing={2}>

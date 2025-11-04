@@ -1,7 +1,6 @@
 import { AccountCreationSchemaVersion } from '../../../schemas/AccountLifecycle.schema';
 import { verificationV1 } from './v1';
 
-
 export async function verification({
   version,
   chainId,

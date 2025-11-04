@@ -1,5 +1,5 @@
-import { TokenBalanceWithInfo } from "@/hooks/useQueryTokenBalances";
-import { BackendResponse } from "./backendResponse";
+import { TokenBalanceWithInfo } from '@/hooks/useQueryTokenBalances';
+import { BackendResponse } from './backendResponse';
 
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND_ADDRESS!;
 
@@ -12,15 +12,15 @@ export async function backendIsConnected({
   address,
   chainId,
 }: BackendIsConnectedParams): Promise<BackendResponse<boolean>> {
-  const accountVerificationUrl = new URL("account/verify", baseUrl);
-  accountVerificationUrl.searchParams.append("address", address);
-  accountVerificationUrl.searchParams.append("chainId", chainId.toString());
+  const accountVerificationUrl = new URL('account/verify', baseUrl);
+  accountVerificationUrl.searchParams.append('address', address);
+  accountVerificationUrl.searchParams.append('chainId', chainId.toString());
 
   // Get account verification situation
   const response = await fetch(accountVerificationUrl, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   });
   const jsonResponse = await response.json();

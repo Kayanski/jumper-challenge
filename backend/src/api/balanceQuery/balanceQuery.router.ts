@@ -5,7 +5,11 @@ import { z } from 'zod';
 import { createApiResponse } from '@/api-docs/openAPIResponseBuilders';
 import { ResponseStatus, ServiceResponse } from '@/common/models/serviceResponse';
 import { handleServiceResponse } from '@/common/utils/httpHandlers';
-import { AllBalancesResponseSchema, BalanceQuerySchema, BalanceResponseSchema } from '../../schemas/BalanceQuery.schema';
+import {
+  AllBalancesResponseSchema,
+  BalanceQuerySchema,
+  BalanceResponseSchema,
+} from '../../schemas/BalanceQuery.schema';
 import { publicClient } from '@/common/evm/viemClient';
 import { alchemyTokenBalances, alchemyTokenInfo } from '@/common/evm/alchemyTokenQueries';
 import { StatusCodes } from 'http-status-codes';
@@ -25,7 +29,7 @@ export const balanceQueryRouter: Router = (() => {
       query: BalanceQuerySchema,
     },
     tags: ['Balance Query'],
-    responses: createApiResponse(BalanceResponseSchema, 'Success')
+    responses: createApiResponse(BalanceResponseSchema, 'Success'),
   });
 
   router.get('/', async (req: Request, res: Response) => {
@@ -49,9 +53,14 @@ export const balanceQueryRouter: Router = (() => {
   });
 
   router.get('/all', async (req: Request, res: Response) => {
-    const balances = await getAllBalances()
+    const balances = await getAllBalances();
 
-    const serviceResponse = new ServiceResponse(ResponseStatus.Success, "All Balances fetched", balances, StatusCodes.OK);
+    const serviceResponse = new ServiceResponse(
+      ResponseStatus.Success,
+      'All Balances fetched',
+      balances,
+      StatusCodes.OK
+    );
     handleServiceResponse(serviceResponse, res);
   });
 

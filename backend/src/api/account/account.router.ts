@@ -7,10 +7,7 @@ import { createApiResponse } from '@/api-docs/openAPIResponseBuilders';
 import { ResponseStatus, ServiceResponse } from '@/common/models/serviceResponse';
 import { handleServiceResponse } from '@/common/utils/httpHandlers';
 import { StatusCodes } from 'http-status-codes';
-import {
-  AccountCreationSchema,
-  AccountVerificationSchema,
-} from '../../schemas/AccountLifecycle.schema';
+import { AccountCreationSchema, AccountVerificationSchema } from '../../schemas/AccountLifecycle.schema';
 import { AppDataSource } from '@/server';
 import { verification } from '../../service/account/ownershipVerification';
 import { Account } from '@/models/Account.model';

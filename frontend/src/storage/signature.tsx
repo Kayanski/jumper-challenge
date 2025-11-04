@@ -1,7 +1,5 @@
-import { sign } from "crypto";
-import { get } from "http";
-import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 export interface SignatureParams {
   address: `0x${string}`;
@@ -34,8 +32,8 @@ export const useOwnershipSignature = create<OwnershipSignatureState>()(
       },
     }),
     {
-      name: "ownership-signature-storage",
+      name: 'ownership-signature-storage',
       storage: createJSONStorage(() => localStorage),
-    },
-  ),
+    }
+  )
 );

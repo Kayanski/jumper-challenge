@@ -1,36 +1,19 @@
-import {
-  Avatar,
-  Box,
-  Card,
-  CardContent,
-  Chip,
-  IconButton,
-  Stack,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import CheckIcon from "@mui/icons-material/Check";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import { TokenBalanceWithInfo } from "@/hooks/useQueryTokenBalances";
-import { useState } from "react";
-import { useAccount, useChainId, useChains } from "wagmi";
+import { Avatar, Box, Card, CardContent, Chip, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import CheckIcon from '@mui/icons-material/Check';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { TokenBalanceWithInfo } from '@/hooks/useQueryTokenBalances';
+import { useState } from 'react';
+import { useAccount, useChainId, useChains } from 'wagmi';
 
 export enum TokenRowMode {
   DEFAULT,
   SPAM,
 }
 
-export function TokenRow({
-  token,
-  mode = TokenRowMode.DEFAULT,
-}: {
-  token: TokenBalanceWithInfo;
-  mode?: TokenRowMode;
-}) {
-
+export function TokenRow({ token, mode = TokenRowMode.DEFAULT }: { token: TokenBalanceWithInfo; mode?: TokenRowMode }) {
   const chainId = useChains();
-  const { chain } = useAccount()
+  const { chain } = useAccount();
 
   const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
 
@@ -44,11 +27,7 @@ export function TokenRow({
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
 
-  const formatTokenBalance = (
-    balance: bigint,
-    decimals = 18,
-    maxFraction = 6,
-  ) => {
+  const formatTokenBalance = (balance: bigint, decimals = 18, maxFraction = 6) => {
     try {
       const factor = BigInt(10 ** decimals);
       const decimaledBalance = balance / factor;
@@ -59,7 +38,7 @@ export function TokenRow({
     } catch {
       // fallback if BigInt fails
       const n = Number(balance) / 10 ** decimals;
-      return n.toFixed(Math.min(maxFraction, 6)).replace(/\.?0+$/, "");
+      return n.toFixed(Math.min(maxFraction, 6)).replace(/\.?0+$/, '');
     }
   };
 
@@ -68,7 +47,7 @@ export function TokenRow({
   };
   const formatTokenName = (tokenName: string) => {
     if (tokenNameDeservesSlicing(tokenName)) {
-      return tokenName.slice(0, 22) + "...";
+      return tokenName.slice(0, 22) + '...';
     }
     return tokenName;
   };
@@ -78,7 +57,7 @@ export function TokenRow({
   };
   const formatTokenSymbol = (tokenSymbol: string) => {
     if (tokenSymbolDeservesSlicing(tokenSymbol)) {
-      return tokenSymbol.slice(0, 7) + "...";
+      return tokenSymbol.slice(0, 7) + '...';
     }
     return tokenSymbol;
   };
@@ -86,40 +65,40 @@ export function TokenRow({
   return (
     <Card
       sx={{
-        bgcolor: "background.paper",
-        backdropFilter: "blur(10px)",
-        border: "1px solid rgba(100, 116, 139, 0.3)",
-        transition: "all 0.3s ease",
-        "&:hover": {
-          bgcolor: "background.default",
-          borderColor: "rgba(168, 85, 247, 0.5)",
-          transform: "translateY(-2px)",
+        bgcolor: 'background.paper',
+        backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(100, 116, 139, 0.3)',
+        transition: 'all 0.3s ease',
+        '&:hover': {
+          bgcolor: 'background.default',
+          borderColor: 'rgba(168, 85, 247, 0.5)',
+          transform: 'translateY(-2px)',
         },
       }}
     >
       <CardContent>
         <Box
           sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
             gap: 2,
           }}
         >
           {/* Token Logo */}
-          <Tooltip title={token.logo ? token.name : "No logo available"}>
+          <Tooltip title={token.logo ? token.name : 'No logo available'}>
             <Avatar
-              src={token.logo || ""}
+              src={token.logo || ''}
               alt={token.name}
               sx={{
                 width: 56,
                 height: 56,
-                bgcolor: "rgba(51, 65, 85, 0.5)",
-                border: "2px solid",
-                borderColor: "rgba(100, 116, 139, 1)",
-                transition: "border-color 0.3s ease",
-                ".MuiCard-root:hover &": {
-                  borderColor: "primary.main",
+                bgcolor: 'rgba(51, 65, 85, 0.5)',
+                border: '2px solid',
+                borderColor: 'rgba(100, 116, 139, 1)',
+                transition: 'border-color 0.3s ease',
+                '.MuiCard-root:hover &': {
+                  borderColor: 'primary.main',
                 },
               }}
             />
@@ -127,48 +106,42 @@ export function TokenRow({
 
           {/* Token Info */}
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Box
-              sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}
-            >
-              <Tooltip
-                title={token.name}
-                disableHoverListener={!tokenNameDeservesSlicing(token.name)}
-              >
-                <Typography
-                  variant="h6"
-                  sx={{ fontWeight: 600 }}
-                >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+              <Tooltip title={token.name} disableHoverListener={!tokenNameDeservesSlicing(token.name)}>
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
                   {formatTokenName(token.name)}
                 </Typography>
               </Tooltip>
-              <Tooltip
-                title={token.symbol}
-                disableHoverListener={!tokenSymbolDeservesSlicing(token.symbol)}
-              >
+              <Tooltip title={token.symbol} disableHoverListener={!tokenSymbolDeservesSlicing(token.symbol)}>
                 <Chip
                   label={formatTokenSymbol(token.symbol)}
                   size="small"
-                  sx={[{
-                    fontSize: "0.75rem",
-                    fontWeight: 500,
-                  }, (theme) => theme.applyStyles("dark", {
-                    color: "#d8b4fe",
-                    bgcolor: "rgba(168, 85, 247, 0.2)",
-                  }), (theme) => theme.applyStyles("light", {
-                    bgcolor: "rgba(168, 85, 247, 0.8)",
-                    color: "white"
-                  })]
-                  }
+                  sx={[
+                    {
+                      fontSize: '0.75rem',
+                      fontWeight: 500,
+                    },
+                    (theme) =>
+                      theme.applyStyles('dark', {
+                        color: '#d8b4fe',
+                        bgcolor: 'rgba(168, 85, 247, 0.2)',
+                      }),
+                    (theme) =>
+                      theme.applyStyles('light', {
+                        bgcolor: 'rgba(168, 85, 247, 0.8)',
+                        color: 'white',
+                      }),
+                  ]}
                 />
               </Tooltip>
             </Box>
             <Typography
               variant="body2"
               sx={{
-                color: "text.secondary",
-                fontFamily: "monospace",
-                fontSize: "0.875rem",
-                textAlign: "left",
+                color: 'text.secondary',
+                fontFamily: 'monospace',
+                fontSize: '0.875rem',
+                textAlign: 'left',
               }}
             >
               {shortenAddress(token.contractAddress)}
@@ -176,35 +149,28 @@ export function TokenRow({
           </Box>
 
           {/* Balance Info and action buttons */}
-          <Box sx={{ textAlign: "right", mr: 2 }}>
-            <Tooltip
-              title={token.symbol}
-              disableHoverListener={!tokenSymbolDeservesSlicing(token.symbol)}
-            >
-              <Typography
-                variant="h6"
-                sx={{ fontWeight: 600, mb: 0.5 }}
-              >
-                {formatTokenBalance(token.tokenBalance, token.decimals)}{" "}
-                {formatTokenSymbol(token.symbol)}
+          <Box sx={{ textAlign: 'right', mr: 2 }}>
+            <Tooltip title={token.symbol} disableHoverListener={!tokenSymbolDeservesSlicing(token.symbol)}>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
+                {formatTokenBalance(token.tokenBalance, token.decimals)} {formatTokenSymbol(token.symbol)}
               </Typography>
             </Tooltip>
           </Box>
-          <Box sx={{ display: "flex", gap: 1 }}>
+          <Box sx={{ display: 'flex', gap: 1 }}>
             <Tooltip title="Copy address">
               <IconButton
                 onClick={() => copyToClipboard(token.contractAddress)}
                 sx={{
-                  bgcolor: "background.paper",
-                  color: "text.secondary",
-                  "&:hover": {
-                    bgcolor: "rgba(51, 65, 85, 1)",
-                    color: "white",
+                  bgcolor: 'background.paper',
+                  color: 'text.secondary',
+                  '&:hover': {
+                    bgcolor: 'rgba(51, 65, 85, 1)',
+                    color: 'white',
                   },
                 }}
               >
                 {copiedAddress === token.contractAddress ? (
-                  <CheckIcon sx={{ fontSize: 20, color: "#4ade80" }} />
+                  <CheckIcon sx={{ fontSize: 20, color: '#4ade80' }} />
                 ) : (
                   <ContentCopyIcon sx={{ fontSize: 20 }} />
                 )}
@@ -217,11 +183,11 @@ export function TokenRow({
                 target="_blank"
                 rel="noopener noreferrer"
                 sx={{
-                  bgcolor: "background.paper",
-                  color: "text.secondary",
-                  "&:hover": {
-                    bgcolor: "rgba(51, 65, 85, 1)",
-                    color: "white",
+                  bgcolor: 'background.paper',
+                  color: 'text.secondary',
+                  '&:hover': {
+                    bgcolor: 'rgba(51, 65, 85, 1)',
+                    color: 'white',
                   },
                 }}
               >
