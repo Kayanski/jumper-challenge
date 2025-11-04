@@ -28,9 +28,9 @@ export default function Home() {
   const { data: balances } = useQueryTokenBalances();
   const { data: isConnected } = useIsConnected();
 
-  const { mutateAsync: deleteAccount } = useAccountDelete();
+  const { mutateAsync: deleteAccount, isError } = useAccountDelete();
 
-  const { isCreatingAccount, signAndCreateAccount } = useVerifyOwnership();
+  const { mutate: signAndCreateAccount, isPending: isCreatingAccount, error: accountCreationError, isError: isCreatingAccountError } = useVerifyOwnership();
 
   return (
     <Box
@@ -85,12 +85,17 @@ export default function Home() {
                 {!isCreatingAccount && (
                   <StyledButton
                     variant="contained"
-                    color="primary"
+                    color={isCreatingAccountError ? "error" : "primary"}
                     onClick={() => signAndCreateAccount()}
                   >
-                    Verify Account
+                    {isError ? "Error verifying account" : "Verify Account"}
                   </StyledButton>
                 )}
+                {!isCreatingAccount && isCreatingAccountError && <Box>
+                  <SecondaryText color="error.light">
+                    {accountCreationError.message.includes("Failed to fetch") ? "Token server is down" : accountCreationError.message}
+                  </SecondaryText>
+                </Box>}
                 {isCreatingAccount && <Loader />}
                 <SecondaryText>
                   This is needed in order to fetch your account balance
@@ -115,20 +120,21 @@ export default function Home() {
                     {signature && (
                       <StyledButton
                         variant="contained"
-                        color="primary"
+                        color={isError ? "error" : "primary"}
                         onClick={() => deleteAccount({ signature })}
                       >
-                        Delete Account
+                        {isError ? "Error deleting account" : "Delete Account"}
                       </StyledButton>
                     )}
                   </Box>
-                  <Typography
+                  {balances.length !== 0 && <Typography
                     variant="h5"
                     component="h1"
                     sx={{ fontWeight: 700, mb: 1, mt: 5, textAlign: "left" }}
                   >
                     All ERC-20 tokens held by your account:
-                  </Typography>
+                  </Typography>}
+
                   <TokenList tokens={balances} />
                 </>
               )}

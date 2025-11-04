@@ -2,61 +2,38 @@ import { useCallback, useState } from "react";
 import { useAccount, useSignMessage } from "wagmi";
 import { useAccountCreation } from "./useAccountCreation";
 import { useOwnershipSignature } from "@/storage/signature";
+import { useMutation } from "@tanstack/react-query";
+import { sign } from "crypto";
 
 export const useVerifyOwnership = () => {
   const { address, chainId } = useAccount();
   const [isCreatingAccount, setIsCreatingAccount] = useState(false);
   const { addSignature, getSignature } = useOwnershipSignature();
   const { mutateAsync: createAccount } = useAccountCreation();
-  const { signMessage } = useSignMessage({});
+  const { signMessageAsync } = useSignMessage({});
 
-  const signAndCreateAccount = useCallback(async () => {
-    if (!address || !chainId) {
-      throw new Error("Unreachable, no account connected");
-    }
-    setIsCreatingAccount(true);
-    const signature = getSignature({
-      address,
-      chainId,
-    });
-    if (!signature) {
-      signMessage(
-        {
+  const signAndCreateAccount = useMutation({
+    mutationFn: async () => {
+      if (!address || !chainId) {
+        throw new Error("Unreachable, no account connected");
+      }
+      let signature = getSignature({
+        address,
+        chainId,
+      });
+      if (!signature) {
+        signature = await signMessageAsync({
           message: JSON.stringify({
             message: "Verify ownership of this address",
             address,
             chainId,
           }),
-        },
-        {
-          onSuccess(data) {
-            addSignature({ address, chainId }, data);
-            createAccount({ signature: data }).finally(() => {
-              setIsCreatingAccount(false);
-            });
-          },
-          onError() {
-            setIsCreatingAccount(false);
-          },
-        },
-      );
-    } else {
-      createAccount({ signature }).finally(() => {
-        setIsCreatingAccount(false);
-      });
+        });
+        addSignature({ address, chainId }, signature);
+      }
+      await createAccount({ signature })
     }
-  }, [
-    address,
-    chainId,
-    createAccount,
-    setIsCreatingAccount,
-    getSignature,
-    addSignature,
-    signMessage,
-  ]);
+  });
 
-  return {
-    signAndCreateAccount,
-    isCreatingAccount,
-  };
+  return signAndCreateAccount;
 };

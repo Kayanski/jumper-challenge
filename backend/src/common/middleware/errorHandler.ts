@@ -9,7 +9,6 @@ const unexpectedRequest: RequestHandler = (_req, res) => {
 const addErrorToRequestLog: ErrorRequestHandler = (error, _req, res, next) => {
 
   if (env.NODE_ENV === 'development') {
-    res.locals.err = error;
     next(error)
     return
   }
