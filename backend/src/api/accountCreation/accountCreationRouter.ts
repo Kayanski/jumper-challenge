@@ -12,7 +12,7 @@ import {
   AccountVerificationSchema,
 } from '../../schemas/accountCreationSchema';
 import { AppDataSource } from '@/server';
-import { verification } from './verification';
+import { verification } from './ownershipVerification';
 import { Account } from '@/models/Account';
 
 export const accountCreationRegistry = new OpenAPIRegistry();
@@ -86,7 +86,7 @@ export const accountCreationRouter: Router = (() => {
 
     await verification({ version, address: address as `0x${string}`, signature: signature as `0x${string}`, chainId });
 
-    // We create the account in the database
+    // We delete the account from the database
     const accountRepository = AppDataSource.getRepository(Account);
     await accountRepository.delete({ address: address, chainId });
 
