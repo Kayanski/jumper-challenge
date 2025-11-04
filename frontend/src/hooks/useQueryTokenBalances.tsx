@@ -38,7 +38,6 @@ export function useLeaderBoard() {
     queryKey: ['leaderBoard'],
     queryFn: async () => {
       const backendTokens = await backendLeaderBoard();
-      console.log('backendTokens', backendTokens.responseObject);
       return backendTokens.responseObject;
     },
   });

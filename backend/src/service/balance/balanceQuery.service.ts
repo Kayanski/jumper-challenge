@@ -28,7 +28,7 @@ export async function balanceQuery({ address, chainId }: BalanceQueryParams) {
   const tokenBalanceRepository = AppDataSource.getRepository(TokenBalance);
   const accountRepository = AppDataSource.getRepository(Account);
 
-  const user = await accountRepository.findOneBy({ address: address as `0x${string}` });
+  const user = await accountRepository.findOneBy({ address: address as `0x${string}`, chainId });
   if (!user) {
     throw new Error('User not found'); // TODO error handling
   }

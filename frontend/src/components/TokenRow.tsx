@@ -1,11 +1,9 @@
 import { Avatar, Box, Card, CardContent, Chip, IconButton, Stack, Tooltip, Typography } from '@mui/material';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import CheckIcon from '@mui/icons-material/Check';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { TokenBalanceWithInfo } from '@/hooks/useQueryTokenBalances';
-import { useState } from 'react';
-import { useAccount, useChainId, useChains } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { shortenAddress } from '@/utils/shorten';
+import { AddressButtons } from './AddressButtons';
+import { ListCard } from './styled/StyledCard';
 
 export enum TokenRowMode {
   DEFAULT,
@@ -13,16 +11,8 @@ export enum TokenRowMode {
 }
 
 export function TokenRow({ token, mode = TokenRowMode.DEFAULT }: { token: TokenBalanceWithInfo; mode?: TokenRowMode }) {
-  const chainId = useChains();
   const { chain } = useAccount();
 
-  const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
-
-  const copyToClipboard = (address: `0x${string}`) => {
-    navigator.clipboard.writeText(address);
-    setCopiedAddress(address);
-    setTimeout(() => setCopiedAddress(null), 2000);
-  };
 
   const formatTokenBalance = (balance: bigint, decimals = 18, maxFraction = 6) => {
     try {
@@ -60,19 +50,7 @@ export function TokenRow({ token, mode = TokenRowMode.DEFAULT }: { token: TokenB
   };
 
   return (
-    <Card
-      sx={{
-        bgcolor: 'background.paper',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(100, 116, 139, 0.3)',
-        transition: 'all 0.3s ease',
-        '&:hover': {
-          bgcolor: 'background.default',
-          borderColor: 'rgba(168, 85, 247, 0.5)',
-          transform: 'translateY(-2px)',
-        },
-      }}
-    >
+    <ListCard>
       <CardContent>
         <Box
           sx={{
@@ -153,47 +131,9 @@ export function TokenRow({ token, mode = TokenRowMode.DEFAULT }: { token: TokenB
               </Typography>
             </Tooltip>
           </Box>
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            <Tooltip title="Copy address">
-              <IconButton
-                onClick={() => copyToClipboard(token.contractAddress)}
-                sx={{
-                  bgcolor: 'background.paper',
-                  color: 'text.secondary',
-                  '&:hover': {
-                    bgcolor: 'rgba(51, 65, 85, 1)',
-                    color: 'white',
-                  },
-                }}
-              >
-                {copiedAddress === token.contractAddress ? (
-                  <CheckIcon sx={{ fontSize: 20, color: '#4ade80' }} />
-                ) : (
-                  <ContentCopyIcon sx={{ fontSize: 20 }} />
-                )}
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={`View on ${chain?.blockExplorers?.default.name}`}>
-              <IconButton
-                component="a"
-                href={`${chain?.blockExplorers?.default.url}/address/${token.contractAddress}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                sx={{
-                  bgcolor: 'background.paper',
-                  color: 'text.secondary',
-                  '&:hover': {
-                    bgcolor: 'rgba(51, 65, 85, 1)',
-                    color: 'white',
-                  },
-                }}
-              >
-                <OpenInNewIcon sx={{ fontSize: 20 }} />
-              </IconButton>
-            </Tooltip>
-          </Box>
+          <AddressButtons address={token.contractAddress} chain={chain} />
         </Box>
       </CardContent>
-    </Card>
+    </ListCard>
   );
 }

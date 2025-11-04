@@ -2,7 +2,7 @@ import { TokenBalanceWithInfo } from '@/hooks/useQueryTokenBalances';
 import { Button, Stack } from '@mui/material';
 import { TokenRow, TokenRowMode } from './TokenRow';
 import React, { useMemo, useState } from 'react';
-import { SecondaryText } from './Text';
+import { SecondaryText } from './styled/Text';
 
 export function TokenList({ tokens }: { tokens: TokenBalanceWithInfo[] }) {
   const [safeTokens, potentialSpamTokens] = useMemo(() => {

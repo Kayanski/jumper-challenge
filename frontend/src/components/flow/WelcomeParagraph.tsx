@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import { SecondaryText } from '../Text';
+import { SecondaryText } from '../styled/Text';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 export function WelcomeParagraph() {
