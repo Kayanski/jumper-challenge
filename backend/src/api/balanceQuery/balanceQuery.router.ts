@@ -10,12 +10,9 @@ import {
   BalanceQuerySchema,
   BalanceResponseSchema,
 } from '../../schemas/BalanceQuery.schema';
-import { publicClient } from '@/common/evm/viemClient';
-import { alchemyTokenBalances, alchemyTokenInfo } from '@/common/evm/alchemyTokenQueries';
 import { StatusCodes } from 'http-status-codes';
-import { AppDataSource } from '@/server';
-import { TokenBalance } from '@/models/TokenBalance.model';
 import { balanceQuery, getAllBalances } from '@/service/balance/balanceQuery.service';
+import { AllBalancesMessage, BalanceQueryMessage } from '@/schemas/status.schema';
 
 export const balanceQueryRegistry = new OpenAPIRegistry();
 
@@ -38,7 +35,7 @@ export const balanceQueryRouter: Router = (() => {
     const balanceResponse = await balanceQuery({ address, chainId });
     const serviceResponse = new ServiceResponse(
       ResponseStatus.Success,
-      'Query balance for address successful',
+      BalanceQueryMessage,
       balanceResponse,
       StatusCodes.OK
     );
@@ -57,7 +54,7 @@ export const balanceQueryRouter: Router = (() => {
 
     const serviceResponse = new ServiceResponse(
       ResponseStatus.Success,
-      'All Balances fetched',
+      AllBalancesMessage,
       balances,
       StatusCodes.OK
     );

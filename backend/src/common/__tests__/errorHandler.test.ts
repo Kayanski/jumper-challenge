@@ -2,7 +2,7 @@ import express, { Express } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
-import errorHandler from '@/common/middleware/errorHandler';
+import errorHandler, { PROD_ERROR_MESSAGE } from '@/common/middleware/errorHandler';
 
 describe('Error Handler Middleware', () => {
   let app: Express;
@@ -19,7 +19,6 @@ describe('Error Handler Middleware', () => {
     });
 
     app.use(errorHandler());
-    app.use('*', (req, res) => res.status(StatusCodes.NOT_FOUND).send('Not Found'));
   });
 
   describe('Handling unknown routes', () => {
@@ -33,6 +32,7 @@ describe('Error Handler Middleware', () => {
     it('handles thrown errors with a 500 status code', async () => {
       const response = await request(app).get('/error');
       expect(response.status).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(response.body.message).toBe(PROD_ERROR_MESSAGE);
     });
   });
 
@@ -40,6 +40,7 @@ describe('Error Handler Middleware', () => {
     it('handles errors passed to next() with a 500 status code', async () => {
       const response = await request(app).get('/next-error');
       expect(response.status).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(response.body.message).toBe(PROD_ERROR_MESSAGE);
     });
   });
 });

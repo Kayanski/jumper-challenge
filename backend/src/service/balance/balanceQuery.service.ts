@@ -1,8 +1,8 @@
 import { alchemyTokenBalances, alchemyTokenInfo } from '@/common/evm/alchemyTokenQueries';
+import { AppDataSource } from '@/common/middleware/dataSource';
 import { Account } from '@/models/Account.model';
 import { Token } from '@/models/Token.model';
 import { TokenBalance } from '@/models/TokenBalance.model';
-import { AppDataSource } from '@/server';
 import { In } from 'typeorm';
 
 export interface BalanceQueryParams {

@@ -1,5 +1,5 @@
+import { AppDataSource } from '@/common/middleware/dataSource';
 import { Token } from '@/models/Token.model';
-import { AppDataSource } from '@/server';
 
 /// Queries all the tokens saved in the database
 export async function getAllTokens() {

@@ -5,10 +5,10 @@ import { createApiResponse } from '@/api-docs/openAPIResponseBuilders';
 import { ResponseStatus, ServiceResponse } from '@/common/models/serviceResponse';
 import { handleServiceResponse } from '@/common/utils/httpHandlers';
 import { StatusCodes } from 'http-status-codes';
-import { AppDataSource } from '@/server';
 import { Token } from '@/models/Token.model';
 import { TokenMetadataResponseSchema } from '@/schemas/TokenQuery.schema';
 import { getAllTokens } from '@/service/tokens/tokens.service';
+import { TokenQueryMessage } from '@/schemas/status.schema';
 
 export const tokenQueryRegistry = new OpenAPIRegistry();
 
@@ -27,7 +27,7 @@ export const tokenQueryRouter: Router = (() => {
     const tokens = await getAllTokens();
     const serviceResponse = new ServiceResponse(
       ResponseStatus.Success,
-      'Query all tokens success',
+      TokenQueryMessage,
       tokens,
       StatusCodes.OK
     );

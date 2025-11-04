@@ -1,7 +1,7 @@
 import { Account } from '@/models/Account.model';
 import { AccountCreationSchemaVersion } from '@/schemas/AccountLifecycle.schema';
-import { AppDataSource } from '@/server';
 import { verification } from './ownershipVerification';
+import { AppDataSource } from '@/common/middleware/dataSource';
 
 interface CreateAccountParams {
   version: AccountCreationSchemaVersion;

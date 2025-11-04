@@ -20,42 +20,30 @@ import { tokenQueryRouter } from './api/tokenQuery/tokenQuery.router';
 const logger = pino({ name: 'server start' });
 const app: Express = express();
 
-// TypeORM
-const AppDataSource = new DataSource({
-  type: 'postgres',
-  host: env.POSTGRES_HOST,
-  port: env.POSTGRES_PORT,
-  username: env.POSTGRES_USERNAME,
-  password: env.POSTGRES_PASSWORD,
-  database: env.POSTGRES_DB,
-  entities: [Account, TokenBalance, Token],
-  synchronize: true,
-  logging: false,
-});
-AppDataSource.initialize().then(() => {
-  // Set the application to trust the reverse proxy
-  app.set('trust proxy', true);
+// Set the application to trust the reverse proxy
+app.set('trust proxy', true);
 
-  // Middlewares
-  app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
-  app.use(helmet());
-  app.use(rateLimiter);
-  app.use(express.json());
+// Middlewares
+app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
+app.use(helmet());
+app.use(rateLimiter);
+app.use(express.json());
 
-  // Request logging
-  app.use(requestLogger);
+// Request logging
+app.use(requestLogger);
 
-  // Routes
-  app.use('/health-check', healthCheckRouter);
-  app.use('/account', accountCreationRouter);
-  app.use('/balance-query', balanceQueryRouter);
-  app.use('/tokens', tokenQueryRouter);
+// Routes
+app.use('/health-check', healthCheckRouter);
+app.use('/account', accountCreationRouter);
+app.use('/balance-query', balanceQueryRouter);
+app.use('/tokens', tokenQueryRouter);
 
-  // Swagger UI
-  app.use(openAPIRouter);
+// Swagger UI
+app.use(openAPIRouter);
 
-  // Error handlers
-  app.use(errorHandler());
-});
+// Error handlers
+app.use(errorHandler());
 
-export { app, logger, AppDataSource };
+
+
+export { app, logger };

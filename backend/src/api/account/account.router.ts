@@ -8,10 +8,10 @@ import { ResponseStatus, ServiceResponse } from '@/common/models/serviceResponse
 import { handleServiceResponse } from '@/common/utils/httpHandlers';
 import { StatusCodes } from 'http-status-codes';
 import { AccountCreationSchema, AccountVerificationSchema } from '../../schemas/AccountLifecycle.schema';
-import { AppDataSource } from '@/server';
 import { verification } from '../../service/account/ownershipVerification';
 import { Account } from '@/models/Account.model';
 import { createAccount, deleteAccount, verifyAccount } from '@/service/account/account.service';
+import { AccountCreatedMessage, AccountDeletedMessage, AccountVerificationFailedMessage, AccountVerificationSuccessMessage } from '@/schemas/status.schema';
 
 export const accountCreationRegistry = new OpenAPIRegistry();
 
@@ -39,7 +39,7 @@ export const accountCreationRouter: Router = (() => {
     const { version, address, signature, chainId } = AccountCreationSchema.parse(req.body);
     await createAccount({ version, address, signature, chainId });
 
-    const serviceResponse = new ServiceResponse(ResponseStatus.Success, 'Account Created', null, StatusCodes.OK);
+    const serviceResponse = new ServiceResponse(ResponseStatus.Success, AccountCreatedMessage, null, StatusCodes.OK);
     handleServiceResponse(serviceResponse, res);
   });
 
@@ -63,7 +63,7 @@ export const accountCreationRouter: Router = (() => {
     const { version, address, signature, chainId } = AccountCreationSchema.parse(req.body);
     await deleteAccount({ version, address, signature, chainId });
 
-    const serviceResponse = new ServiceResponse(ResponseStatus.Success, 'Account Deleted', null, StatusCodes.OK);
+    const serviceResponse = new ServiceResponse(ResponseStatus.Success, AccountDeletedMessage, null, StatusCodes.OK);
     handleServiceResponse(serviceResponse, res);
   });
 
@@ -84,14 +84,14 @@ export const accountCreationRouter: Router = (() => {
     if (hasAccount) {
       serviceResponse = new ServiceResponse(
         ResponseStatus.Success,
-        'Account Verification Successful',
+        AccountVerificationSuccessMessage,
         true,
         StatusCodes.OK
       );
     } else {
       serviceResponse = new ServiceResponse(
         ResponseStatus.Success,
-        'Account Verification Failed',
+        AccountVerificationFailedMessage,
         false,
         StatusCodes.OK
       );
