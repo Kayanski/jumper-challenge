@@ -3,14 +3,13 @@ import { StatusCodes } from 'http-status-codes';
 import { env } from '../utils/envConfig';
 import { AlchemyQueryError } from '../evm/alchemyTokenQueries';
 
-export const PROD_ERROR_MESSAGE = "Something went wrong, try again later"
+export const PROD_ERROR_MESSAGE = 'Something went wrong, try again later';
 
 const unexpectedRequest: RequestHandler = (_req, res) => {
   res.sendStatus(StatusCodes.NOT_FOUND);
 };
 
 const addErrorToRequestLog: ErrorRequestHandler = (error, _req, res, next) => {
-
   if (error instanceof AlchemyQueryError) {
     // Custom logic to handle AlchemyQueryErrors
     // Not implemented during this challenge, but we could log specific details, create a monitoring alert based on the count of those errors, etc..

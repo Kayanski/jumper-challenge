@@ -13,7 +13,6 @@ export enum TokenRowMode {
 export function TokenRow({ token, mode = TokenRowMode.DEFAULT }: { token: TokenBalanceWithInfo; mode?: TokenRowMode }) {
   const { chain } = useAccount();
 
-
   const formatTokenBalance = (balance: bigint, decimals = 18, maxFraction = 6) => {
     try {
       const factor = BigInt(10 ** decimals);

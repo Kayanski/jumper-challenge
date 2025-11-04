@@ -103,8 +103,8 @@ export async function getAllBalances() {
   return await accountRepository.find({
     relations: {
       balances: {
-        token: true
-      }
+        token: true,
+      },
     },
   });
 }

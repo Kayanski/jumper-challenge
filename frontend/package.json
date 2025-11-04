@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --config .prettierrc --write ."
   },
   "dependencies": {
     "@emotion/cache": "^11.11.0",
@@ -24,7 +25,8 @@
     "react-dom": "^18",
     "viem": "^2.38.6",
     "wagmi": "^2.19.2",
-    "zustand": "^5.0.8"
+    "zustand": "^5.0.8",
+    "prettier": "^3.2.5"
   },
   "devDependencies": {
     "@types/node": "^20",

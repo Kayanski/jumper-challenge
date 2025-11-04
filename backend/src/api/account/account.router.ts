@@ -11,7 +11,12 @@ import { AccountCreationSchema, AccountVerificationSchema } from '../../schemas/
 import { verification } from '../../service/account/ownershipVerification';
 import { Account } from '@/models/Account.model';
 import { createAccount, deleteAccount, verifyAccount } from '@/service/account/account.service';
-import { AccountCreatedMessage, AccountDeletedMessage, AccountVerificationFailedMessage, AccountVerificationSuccessMessage } from '@/schemas/status.schema';
+import {
+  AccountCreatedMessage,
+  AccountDeletedMessage,
+  AccountVerificationFailedMessage,
+  AccountVerificationSuccessMessage,
+} from '@/schemas/status.schema';
 
 export const accountCreationRegistry = new OpenAPIRegistry();
 
@@ -72,7 +77,7 @@ export const accountCreationRouter: Router = (() => {
   accountCreationRegistry.registerPath({
     method: 'get',
     path: '/account/verify',
-    description: "Verify it the user address has already created an account",
+    description: 'Verify it the user address has already created an account',
     request: {
       params: AccountVerificationSchema,
     },

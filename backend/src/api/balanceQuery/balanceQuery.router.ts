@@ -22,7 +22,8 @@ export const balanceQueryRouter: Router = (() => {
   balanceQueryRegistry.registerPath({
     method: 'get',
     path: '/balance-query',
-    description: "Queries all the ERC-20 token balances for a given address on a specified chain. Errors of the user address is not registered with the platform",
+    description:
+      'Queries all the ERC-20 token balances for a given address on a specified chain. Errors of the user address is not registered with the platform',
     request: {
       query: BalanceQuerySchema,
     },
@@ -46,7 +47,8 @@ export const balanceQueryRouter: Router = (() => {
   balanceQueryRegistry.registerPath({
     method: 'get',
     path: '/balance-query/all',
-    description: "Returns all the ERC-20 token balances for all registered users on the platform at the last time they queries their balances.",
+    description:
+      'Returns all the ERC-20 token balances for all registered users on the platform at the last time they queries their balances.',
     tags: ['Balance Query'],
     responses: createApiResponse(AllBalancesResponseSchema, 'Success'),
   });
@@ -54,12 +56,7 @@ export const balanceQueryRouter: Router = (() => {
   router.get('/all', async (req: Request, res: Response) => {
     const balances = await getAllBalances();
 
-    const serviceResponse = new ServiceResponse(
-      ResponseStatus.Success,
-      AllBalancesMessage,
-      balances,
-      StatusCodes.OK
-    );
+    const serviceResponse = new ServiceResponse(ResponseStatus.Success, AllBalancesMessage, balances, StatusCodes.OK);
     handleServiceResponse(serviceResponse, res);
   });
 

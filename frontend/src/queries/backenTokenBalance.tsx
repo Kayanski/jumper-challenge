@@ -27,10 +27,10 @@ export async function backendTokenBalances({
 }
 
 export interface TokenBalancesResponse {
-  id: number
+  id: number;
   chainId: number;
   address: `0x${string}`;
-  balances: TokenBalance[]
+  balances: TokenBalance[];
 }
 export interface TokenBalance {
   id: number;
@@ -46,7 +46,6 @@ export interface TokenMetadata {
   name: string;
   symbol: string;
 }
-
 
 export async function backendLeaderBoard(): Promise<BackendResponse<TokenBalancesResponse[]>> {
   const tokenBalanceUrl = new URL('balance-query/all', baseUrl);

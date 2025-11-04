@@ -10,4 +10,4 @@ export const ListCard = styled(Card)(({ theme }) => ({
     borderColor: 'rgba(168, 85, 247, 0.5)',
     transform: 'translateY(-2px)',
   },
-})); 
+}));

@@ -33,7 +33,6 @@ export function useQueryTokenBalances() {
 }
 
 export function useLeaderBoard() {
-
   return useQuery<TokenBalancesResponse[]>({
     queryKey: ['leaderBoard'],
     queryFn: async () => {
@@ -41,5 +40,4 @@ export function useLeaderBoard() {
       return backendTokens.responseObject;
     },
   });
-
 }

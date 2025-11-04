@@ -11,7 +11,7 @@ function baseUrl(chainId: number): URL {
 export enum AlchemyErrorType {
   None,
   TokenInfo,
-  TokenBalance
+  TokenBalance,
 }
 
 export class AlchemyQueryError extends Error {
@@ -50,7 +50,6 @@ export async function alchemyTokenBalances(chainId: number, address: `0x${string
     });
     const jsonResponse = await response.json();
     return jsonResponse.result;
-
   } catch (error) {
     throw new AlchemyQueryError(error.message, AlchemyErrorType.TokenBalance);
   }

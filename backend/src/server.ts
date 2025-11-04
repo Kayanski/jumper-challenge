@@ -44,6 +44,4 @@ app.use(openAPIRouter);
 // Error handlers
 app.use(errorHandler());
 
-
-
 export { app, logger };
