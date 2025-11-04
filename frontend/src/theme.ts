@@ -31,7 +31,7 @@ const theme = createTheme({
       palette: {
         background: {
           default: '#e3e3e3ff',
-          paper: 'white',
+          paper: '#000000',
         },
       },
     },

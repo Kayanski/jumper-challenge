@@ -1,4 +1,9 @@
+import { usePathname } from "next/navigation";
+
 export function PageToggle() {
+    const pathname = usePathname()
+    if (!pathname) return <div></div>
+
     return (
         <div
             style={{
@@ -14,12 +19,12 @@ export function PageToggle() {
         >
             <button
                 onClick={() => {
-                    if (!window.location.pathname || window.location.pathname.includes('leaderboard')) {
+                    if (!pathname || pathname.includes('leaderboard')) {
                         window.location.assign('/');
                     }
                 }}
                 title="Balance"
-                aria-pressed={(!window.location.pathname.includes('leaderboard')).toString()}
+                aria-pressed={(!pathname.includes('leaderboard')).toString()}
                 style={{
                     display: 'inline-flex',
                     alignItems: 'center',
@@ -27,8 +32,8 @@ export function PageToggle() {
                     padding: '8px 12px',
                     border: 0,
                     borderRadius: 999,
-                    background: window.location.pathname.includes('leaderboard') ? 'transparent' : '#ffffff',
-                    boxShadow: window.location.pathname.includes('leaderboard') ? 'none' : '0 6px 18px rgba(16,24,40,0.08)',
+                    background: pathname.includes('leaderboard') ? 'transparent' : '#ffffff',
+                    boxShadow: pathname.includes('leaderboard') ? 'none' : '0 6px 18px rgba(16,24,40,0.08)',
                     cursor: 'pointer',
                     color: '#0f172a',
                     fontWeight: 600,
@@ -39,12 +44,12 @@ export function PageToggle() {
 
             <button
                 onClick={() => {
-                    if (!window.location.pathname.includes('leaderboard')) {
+                    if (!pathname.includes('leaderboard')) {
                         window.location.assign('/leaderboard');
                     }
                 }}
                 title="Leaderboard"
-                aria-pressed={(window.location.pathname.includes('leaderboard')).toString()}
+                aria-pressed={(pathname.includes('leaderboard')).toString()}
                 style={{
                     display: 'inline-flex',
                     alignItems: 'center',
@@ -52,8 +57,8 @@ export function PageToggle() {
                     padding: '8px 12px',
                     border: 0,
                     borderRadius: 999,
-                    background: window.location.pathname.includes('leaderboard') ? '#ffffff' : 'transparent',
-                    boxShadow: window.location.pathname.includes('leaderboard') ? '0 6px 18px rgba(16,24,40,0.08)' : 'none',
+                    background: pathname.includes('leaderboard') ? '#ffffff' : 'transparent',
+                    boxShadow: pathname.includes('leaderboard') ? '0 6px 18px rgba(16,24,40,0.08)' : 'none',
                     cursor: 'pointer',
                     color: '#0f172a',
                     fontWeight: 600,

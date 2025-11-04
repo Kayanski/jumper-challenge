@@ -27,7 +27,6 @@ export default function LeaderBoard() {
             return acc
         }, {})
     }, [leaderboard]);
-    console.log(sortedLeaderboard)
 
     return (<DefaultBackground>
         <Paper>
@@ -101,7 +100,7 @@ export default function LeaderBoard() {
                                                             ...b.token,
                                                             tokenBalance: BigInt(b.userBalance)
                                                         }}
-                                                        mode={TokenRowMode.DEFAULT}
+                                                        mode={TokenRowMode.SPAM} // We are looking at all balances here by everyone, so we need to hide potential spam
                                                     />
                                                 ))}
                                             </>) : (
