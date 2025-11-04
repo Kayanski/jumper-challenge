@@ -15,6 +15,8 @@ import { useVerifyOwnership } from '@/hooks/useVerifyOwnershipSignature';
 import { useMemo } from 'react';
 import { WelcomeParagraph } from '@/components/flow/WelcomeParagraph';
 import { LoadingTokenList } from '@/components/flow/LoadingTokenList';
+import { DefaultBackground } from '@/components/DefaultBackground';
+import { Paper } from '@/components/Paper';
 
 export default function Home() {
   const { address, chainId } = useAccount();
@@ -38,115 +40,81 @@ export default function Home() {
   } = useVerifyOwnership();
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        bgcolor: 'background.default',
-        px: 2,
-      }}
-    >
-      <Box
-        sx={{
-          display: 'flex',
-          marginTop: '50px',
-          marginBottom: '50px',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'flex-end',
-          gap: 2,
-        }}
-      >
-        <ThemeToggle />
-        <Box
-          sx={{
-            p: 4,
-            borderRadius: 3,
-            minWidth: 320,
-            maxWidth: 720,
-            width: '100%',
-            textAlign: 'center',
-            bgcolor: 'background.paper',
-            color: 'text.primary',
-          }}
-          boxShadow={3}
-        >
-          {!address && <WelcomeParagraph />}
-          {address && !isConnected && (
-            <>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 2,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  mb: 2,
-                }}
-              >
-                <ConnectButton />
-                {!isCreatingAccount && (
-                  <StyledButton
-                    variant="contained"
-                    color={isCreatingAccountError ? 'error' : 'primary'}
-                    onClick={() => signAndCreateAccount()}
-                  >
-                    {isError ? 'Error verifying account' : 'Verify Account'}
-                  </StyledButton>
-                )}
-                {!isCreatingAccount && isCreatingAccountError && (
-                  <Box>
-                    <SecondaryText color="error.light">
-                      {accountCreationError.message.includes('Failed to fetch')
-                        ? 'Token server is down'
-                        : accountCreationError.message}
-                    </SecondaryText>
-                  </Box>
-                )}
-                {isCreatingAccount && <Loader />}
-                <SecondaryText>This is needed in order to fetch your account balance</SecondaryText>
-              </Box>
-            </>
-          )}
-
-          {address && isConnected && (
-            <>
-              {!balances && <LoadingTokenList />}
-              {balances && (
-                <>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      mb: 2,
-                    }}
-                  >
-                    <ConnectButton />
-                    {signature && (
-                      <StyledButton
-                        variant="contained"
-                        color={isError ? 'error' : 'primary'}
-                        onClick={() => deleteAccount({ signature })}
-                      >
-                        {isError ? 'Error deleting account' : 'Delete Account'}
-                      </StyledButton>
-                    )}
-                  </Box>
-                  {balances.length !== 0 && (
-                    <Typography variant="h5" component="h1" sx={{ fontWeight: 700, mb: 1, mt: 5, textAlign: 'left' }}>
-                      All ERC-20 tokens held by your account:
-                    </Typography>
-                  )}
-
-                  <TokenList tokens={balances} />
-                </>
+    <DefaultBackground>
+      <Paper>
+        {!address && <WelcomeParagraph />}
+        {address && !isConnected && (
+          <>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 2,
+                alignItems: 'center',
+                justifyContent: 'center',
+                mb: 2,
+              }}
+            >
+              <ConnectButton />
+              {!isCreatingAccount && (
+                <StyledButton
+                  variant="contained"
+                  color={isCreatingAccountError ? 'error' : 'primary'}
+                  onClick={() => signAndCreateAccount()}
+                >
+                  {isError ? 'Error verifying account' : 'Verify Account'}
+                </StyledButton>
               )}
-            </>
-          )}
-        </Box>
-      </Box>
-    </Box>
+              {!isCreatingAccount && isCreatingAccountError && (
+                <Box>
+                  <SecondaryText color="error.light">
+                    {accountCreationError.message.includes('Failed to fetch')
+                      ? 'Token server is down'
+                      : accountCreationError.message}
+                  </SecondaryText>
+                </Box>
+              )}
+              {isCreatingAccount && <Loader />}
+              <SecondaryText>This is needed in order to fetch your account balance</SecondaryText>
+            </Box>
+          </>
+        )}
+
+        {address && isConnected && (
+          <>
+            {!balances && <LoadingTokenList />}
+            {balances && (
+              <>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    mb: 2,
+                  }}
+                >
+                  <ConnectButton />
+                  {signature && (
+                    <StyledButton
+                      variant="contained"
+                      color={isError ? 'error' : 'primary'}
+                      onClick={() => deleteAccount({ signature })}
+                    >
+                      {isError ? 'Error deleting account' : 'Delete Account'}
+                    </StyledButton>
+                  )}
+                </Box>
+                {balances.length !== 0 && (
+                  <Typography variant="h5" component="h1" sx={{ fontWeight: 700, mb: 1, mt: 5, textAlign: 'left' }}>
+                    All ERC-20 tokens held by your account:
+                  </Typography>
+                )}
+
+                <TokenList tokens={balances} />
+              </>
+            )}
+          </>
+        )}
+      </Paper>
+    </DefaultBackground>
   );
 }

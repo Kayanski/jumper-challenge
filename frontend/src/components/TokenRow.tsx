@@ -5,6 +5,7 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { TokenBalanceWithInfo } from '@/hooks/useQueryTokenBalances';
 import { useState } from 'react';
 import { useAccount, useChainId, useChains } from 'wagmi';
+import { shortenAddress } from '@/utils/shorten';
 
 export enum TokenRowMode {
   DEFAULT,
@@ -23,15 +24,11 @@ export function TokenRow({ token, mode = TokenRowMode.DEFAULT }: { token: TokenB
     setTimeout(() => setCopiedAddress(null), 2000);
   };
 
-  const shortenAddress = (address: `0x${string}`) => {
-    return `${address.slice(0, 6)}...${address.slice(-4)}`;
-  };
-
   const formatTokenBalance = (balance: bigint, decimals = 18, maxFraction = 6) => {
     try {
       const factor = BigInt(10 ** decimals);
       const decimaledBalance = balance / factor;
-      decimaledBalance.toLocaleString(undefined, {
+      return decimaledBalance.toLocaleString(undefined, {
         maximumFractionDigits: 2,
         minimumSignificantDigits: 1,
       });

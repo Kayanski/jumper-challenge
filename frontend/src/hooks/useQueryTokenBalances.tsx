@@ -1,4 +1,4 @@
-import { backendTokenBalances } from '@/queries/backenTokenBalance';
+import { backendLeaderBoard, backendTokenBalances, TokenBalancesResponse } from '@/queries/backenTokenBalance';
 import { useQuery } from '@tanstack/react-query';
 import { useAccount } from 'wagmi';
 import { useIsConnected } from './useIsConnected';
@@ -7,7 +7,7 @@ export interface TokenBalanceWithInfo {
   contractAddress: `0x${string}`;
   tokenBalance: bigint;
   decimals: number;
-  logo: null;
+  logo: null | string;
   name: string;
   symbol: string;
 }
@@ -30,4 +30,17 @@ export function useQueryTokenBalances() {
       return backendTokens.responseObject;
     },
   });
+}
+
+export function useLeaderBoard() {
+
+  return useQuery<TokenBalancesResponse[]>({
+    queryKey: ['leaderBoard'],
+    queryFn: async () => {
+      const backendTokens = await backendLeaderBoard();
+      console.log('backendTokens', backendTokens.responseObject);
+      return backendTokens.responseObject;
+    },
+  });
+
 }

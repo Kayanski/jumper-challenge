@@ -98,12 +98,13 @@ export async function getOrFetchTokenInfo(chainId: number, contractAddresses: `0
 }
 
 export async function getAllBalances() {
-  const tokenBalancesRepository = AppDataSource.getRepository(TokenBalance);
+  const accountRepository = AppDataSource.getRepository(Account);
 
-  return await tokenBalancesRepository.find({
+  return await accountRepository.find({
     relations: {
-      token: true,
-      user: true,
+      balances: {
+        token: true
+      }
     },
   });
 }
