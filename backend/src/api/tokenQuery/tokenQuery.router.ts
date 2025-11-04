@@ -19,6 +19,7 @@ export const tokenQueryRouter: Router = (() => {
   tokenQueryRegistry.registerPath({
     method: 'get',
     path: '/tokens',
+    description: "Queries all ERC-20 token metadata saved in the database of this application.",
     tags: ['Token Query'],
     responses: createApiResponse(TokenMetadataResponseSchema, 'Success'),
   });

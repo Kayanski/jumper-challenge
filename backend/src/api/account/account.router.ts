@@ -21,6 +21,7 @@ export const accountCreationRouter: Router = (() => {
   accountCreationRegistry.registerPath({
     method: 'post',
     path: '/account',
+    description: "Create an account associated with the user address if the user's signature is valid.",
     request: {
       body: {
         content: {
@@ -46,6 +47,7 @@ export const accountCreationRouter: Router = (() => {
   accountCreationRegistry.registerPath({
     method: 'delete',
     path: '/account',
+    description: "Delete the account associated with the user address if the user's signature is valid.",
     request: {
       body: {
         content: {
@@ -70,6 +72,7 @@ export const accountCreationRouter: Router = (() => {
   accountCreationRegistry.registerPath({
     method: 'get',
     path: '/account/verify',
+    description: "Verify it the user address has already created an account",
     request: {
       params: AccountVerificationSchema,
     },
